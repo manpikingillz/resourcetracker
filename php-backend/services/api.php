@@ -895,6 +895,110 @@ class API extends REST {
         } else
             $this->response('', 204); // If no records "No Content" status
     }
+    
+    
+    //  CostCategory Service----------------------------------------------
+    private function costCategorys() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT distinct o.cost_category_id, o.cost_category_name FROM cost_category o order by o.cost_category_name desc";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function costCategory() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT distinct o.cost_category_id, o.cost_category_name FROM cost_category o where o.cost_category_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertCostCategory() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $cost_category = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('cost_category_name');
+        $keys = array_keys($cost_category);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the cost_category received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $cost_category[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO cost_category(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($cost_category)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Cost Category Created Successfully.", "data" => $cost_category);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updateCostCategory() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $cost_category = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $cost_category['id'];
+        $column_names = array('cost_category_name');
+        $keys = array_keys($cost_category['cost_category']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the cost_category received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $cost_category['cost_category'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE cost_category SET " . trim($columns, ',') . " WHERE cost_category_id=$id";
+        if (!empty($cost_category)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Cost Category " . $id . " Updated Successfully.", "data" => $cost_category);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deleteCostCategory() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM cost_category WHERE cost_category_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
 
     /*
      * 	Encode array into JSON

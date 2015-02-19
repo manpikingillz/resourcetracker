@@ -66,7 +66,7 @@
                                     <li><a href="#">Subcategory of support</a></li>
                                     <li><a href="#/partnerTypes">Partner Type</a></li>
                                     <li><a href="#/authoritys">Authority</a></li>
-                                    <li><a href="#">Cost Category</a></li> 
+                                    <li><a href="#/costCategorys">Cost Category</a></li> 
 
                                     <li class="divider"></li>
                                     <li class="dropdown-header">User Management</li>

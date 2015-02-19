@@ -279,7 +279,39 @@ app.factory("authorityService", ['$http', function($http) {
         return obj;
     }]);
 
+//CostCategory Service--------------------------------------------------------------
+app.factory("costCategoryService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
 
+        obj.getCostCategorys = function() {
+            return $http.get(serviceBase + 'costCategorys');
+        }
+
+        obj.getCostCategory = function(costCategoryID) {
+            return $http.get(serviceBase + 'costCategory?id=' + costCategoryID);
+        }
+
+        obj.insertCostCategory = function(costCategory) {
+            return $http.post(serviceBase + 'insertCostCategory', costCategory).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updateCostCategory = function(id, costCategory) {
+            return $http.post(serviceBase + 'updateCostCategory', {id: id, cost_category: costCategory}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deleteCostCategory = function(id) {
+            return $http.delete(serviceBase + 'deleteCostCategory?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
 
 ////////////////Controllers/////////////////////////////////////////////////////
 
@@ -596,6 +628,45 @@ app.controller('AuthorityEditCtrl', function($scope, $rootScope, $location, $rou
     };
 });
 
+//CostCategory Controllers----------------------------------------------------------
+app.controller('CostCategoryListCtrl', function($scope, costCategoryService) {
+    costCategoryService.getCostCategorys().then(function(data) {
+        $scope.costCategorys = data.data;
+    });
+});
+
+
+app.controller('CostCategoryEditCtrl', function($scope, $rootScope, $location, $routeParams, costCategoryService, costCategory) {
+    var costCategoryID = ($routeParams.costCategoryID) ? parseInt($routeParams.costCategoryID) : 0;
+    $rootScope.title = (costCategoryID > 0) ? 'Edit Cost Category' : 'Add Cost Category';
+    $scope.buttonText = (costCategoryID > 0) ? 'Update Cost Category' : 'Add New Cost Category';
+    var original = costCategory.data;
+    original._id = costCategoryID;
+    $scope.costCategory = angular.copy(original);
+    $scope.costCategory._id = costCategoryID;
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.costCategory);
+    }
+
+    $scope.deleteCostCategory = function(costCategory) {
+        $location.path('/');
+        if (confirm("Are you sure to delete Cost Category ID: " + $scope.costCategory._id) == true)
+            costCategoryService.deleteCostCategory(costCategory.cost_category_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.saveCostCategory = function(costCategory) {
+        $location.path('/');
+        if (costCategoryID <= 0) {
+            costCategoryService.insertCostCategory(costCategory);
+        }
+        else {
+            costCategoryService.updateCostCategory(costCategoryID, costCategory);
+        }
+    };
+});
+
 //////////////////////////////Routes////////////////////////////////////////////
 
 app.config(['$routeProvider',
@@ -769,6 +840,24 @@ app.config(['$routeProvider',
                         authority: function(authorityService, $route) {
                             var authorityID = $route.current.params.authorityID;
                             return authorityService.getAuthority(authorityID);
+                        }
+                    }
+                })
+                
+                ////////////////////Cost Category Routes///////////////////////////
+                .when('/costCategorys', {
+                    title: 'Cost Category',
+                    templateUrl: 'partials/costCategory/costCategory-list.html',
+                    controller: 'CostCategoryListCtrl'
+                })
+                .when('/edit-costCategory/:costCategoryID', {
+                    title: 'Edit Cost Category',
+                    templateUrl: 'partials/costCategory/edit-costCategory.html',
+                    controller: 'CostCategoryEditCtrl',
+                    resolve: {
+                        costCategory: function(costCategoryService, $route) {
+                            var costCategoryID = $route.current.params.costCategoryID;
+                            return costCategoryService.getCostCategory(costCategoryID);
                         }
                     }
                 })
