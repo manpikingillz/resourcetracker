@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-md-12" ng-show="authoritys.length > 0">
+
+        <nav class= "navbar navbar-default" role= "navigation" >
+            <div class= "navbar-header" >
+                <a class="btn btn-lg btn-success" href="#/edit-authority/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add new Authority</a>
+            </div>
+        </nav>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <th>Authority Name&nbsp;</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="data in authoritys">
+                    <td>{{data.authority_name}}</td>
+                    <td style="width: 100px"><a href="#/edit-authority/{{data.authority_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp; Edit Authority</a></td>
+                    <!--                <td>
+                                        <div class="btn-group">
+                                            <a href="#/edit-customer/{{data.customerNumber}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp;</a>
+                                            <button class="btn" type="button" ng-click="deleteCustomer(customer)" >&nbsp;<i class="glyphicon glyphicon-trash"></i>&nbsp;</button>
+                                        </div>
+                                    </td>-->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12" ng-show="authoritys.length == 0">
+        <div class="col-md-12">
+            <h4>No Authorities found</h4>
+        </div>
+    </div>
+</div>

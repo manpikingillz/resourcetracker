@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-md-12" ng-show="regions.length > 0">
+
+        <nav class= "navbar navbar-default" role= "navigation" >
+            <div class= "navbar-header" >
+                <a class="btn btn-lg btn-success" href="#/edit-region/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add new Region</a>
+            </div>
+        </nav>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <th>Region Name&nbsp;</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="data in regions">
+                    <td>{{data.region_name}}</td>
+                    <td style="width: 100px"><a href="#/edit-region/{{data.region_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp; Edit Region</a></td>
+                    <!--                <td>
+                                        <div class="btn-group">
+                                            <a href="#/edit-customer/{{data.customerNumber}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp;</a>
+                                            <button class="btn" type="button" ng-click="deleteCustomer(customer)" >&nbsp;<i class="glyphicon glyphicon-trash"></i>&nbsp;</button>
+                                        </div>
+                                    </td>-->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12" ng-show="regions.length == 0">
+        <div class="col-md-12">
+            <h4>No regions found</h4>
+        </div>
+    </div>
+</div>
