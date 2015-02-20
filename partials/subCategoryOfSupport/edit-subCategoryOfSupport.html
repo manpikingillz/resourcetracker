@@ -1,0 +1,68 @@
+﻿<style type="text/css">
+    .form-horizontal input.ng-invalid.ng-dirty {
+        border-color: #FA787E;
+    }
+
+    .form-horizontal input.ng-valid.ng-dirty {
+        border-color: #78FA89;
+    }
+</style>
+<!--<div class="view">-->
+<!--<div class="container">-->
+
+    
+    <nav class= "navbar navbar-default" role= "navigation" >
+        <div class= "navbar-header" >
+            <a class= "navbar-brand" href= "#/subCategoryOfSupports"><i class="glyphicon glyphicon-th-large"></i> SubCategory Of Support List </a>
+            <a ng-show="subCategoryOfSupport._id" class= "navbar-brand" href= "#/edit-subCategoryOfSupport/0"><i class="glyphicon glyphicon-plus"></i> Create SubCategory Of Support </a>
+            <!--<a ng-show="customer._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Customer No: {{customer._id}}</a>-->
+        </div>
+    </nav>
+    <header>
+        <h3 class="btn-primary">{{title}}</h3>
+    </header>
+<!--<div class="row">-->
+    
+        <!--<div>-->
+            <div class="col-md-12">
+        <form role="form" name="myForm" class="form-horizontal">
+            <div class="row">
+                
+                <div class="form-group">
+                <label class="col-sm-2 " >Type Of Support<span class="required">*</span></label>
+                <div class="col-sm-4">
+
+                    <select  class="form-control dropdown" id="requiredAction" ng-model="district.region_id" 
+                             ng-required="true" ng-options="typeOfSupport.type_of_support_name for typeOfSupport in typeOfSupports track by typeOfSupport._id"
+                             >
+                        <option value="">Select...</option>
+                    </select>
+
+                </div>
+            </div>
+
+                <div class= "form-group">
+                    <label class= "col-md-2">SubCategory Of Support Name</label>
+                    <div class="col-md-4">
+                        <input ng-model="subCategoryOfSupport.sub_category_of_support_name" type= "text" class= "form-control" placeholder= "SubCategory Of Support Name"/>
+                    </div>
+                </div>
+                
+                <div class= "form-group">
+                    <label class= "col-md-2"></label>
+                    <div class="col-md-4">
+                        <a href="#/subCategoryOfSupports" class="btn">Cancel</a>
+                        <button ng-click="saveSubCategoryOfSupport(subCategoryOfSupport);" 
+                                ng-disabled="isClean() || myForm.$invalid"
+                                class="btn btn-primary">{{buttonText}}</button>
+                        <button ng-click="deleteSubCategoryOfSupport(subCategoryOfSupport)"
+                                ng-show="subCategoryOfSupport._id" class="btn btn-warning">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        </div>
+    <!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->

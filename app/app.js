@@ -1,5 +1,17 @@
-var app = angular.module('resourceTrackerApp', ['ngRoute', 'ngAnimate', 'toaster']);
+    
+// init jquery functions and plugins
+$(document).ready(function(){
+  $.getScript('//cdnjs.cloudflare.com/ajax/libs/select2/3.4.8/select2.min.js',function(){
 
+    $("#mySel").select2({
+        
+    });
+  });//script
+  
+});
+
+
+var app = angular.module('resourceTrackerApp', ['ngRoute', 'ngAnimate', 'toaster']);
 
 ///////////////////Services/////////////////////////////////////////////////////
 
@@ -313,6 +325,76 @@ app.factory("costCategoryService", ['$http', function($http) {
         return obj;
     }]);
 
+//District Service--------------------------------------------------------------
+app.factory("districtService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
+
+        obj.getDistricts = function() {
+            return $http.get(serviceBase + 'districts');
+        }
+
+        obj.getDistrict = function(districtID) {
+            return $http.get(serviceBase + 'district?id=' + districtID);
+        }
+
+        obj.insertDistrict = function(district) {
+            return $http.post(serviceBase + 'insertDistrict', district).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updateDistrict = function(id, district) {
+            return $http.post(serviceBase + 'updateDistrict', {id: id, district: district}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deleteDistrict = function(id) {
+            return $http.delete(serviceBase + 'deleteDistrict?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
+
+
+//SubCategoryOfSupport Service--------------------------------------------------------------
+app.factory("subCategoryOfSupportService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
+
+        obj.getSubCategoryOfSupports = function() {
+            return $http.get(serviceBase + 'subCategoryOfSupports');
+        }
+
+        obj.getSubCategoryOfSupport = function(subCategoryOfSupportID) {
+            return $http.get(serviceBase + 'subCategoryOfSupport?id=' + subCategoryOfSupportID);
+        }
+
+        obj.insertSubCategoryOfSupport = function(subCategoryOfSupport) {
+            return $http.post(serviceBase + 'insertSubCategoryOfSupport', subCategoryOfSupport).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updateSubCategoryOfSupport = function(id, subCategoryOfSupport) {
+            return $http.post(serviceBase + 'updateSubCategoryOfSupport', {id: id, sub_category_of_support: subCategoryOfSupport}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deleteSubCategoryOfSupport = function(id) {
+            return $http.delete(serviceBase + 'deleteSubCategoryOfSupport?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
+
+
 ////////////////Controllers/////////////////////////////////////////////////////
 
 //Customer Controllers----------------------------------------------------------
@@ -397,6 +479,7 @@ app.controller('RegionListCtrl', function($scope, regionService) {
     regionService.getRegions().then(function(data) {
         $scope.regions = data.data;
     });
+    
 });
 
 
@@ -667,6 +750,98 @@ app.controller('CostCategoryEditCtrl', function($scope, $rootScope, $location, $
     };
 });
 
+
+//District Controllers----------------------------------------------------------
+app.controller('DistrictListCtrl', function($scope, districtService) {
+    districtService.getDistricts().then(function(data) {
+        $scope.districts = data.data;
+    });
+});
+
+
+app.controller('DistrictEditCtrl', function($scope, $rootScope, $location, $routeParams, districtService, regionService, district) {
+    var districtID = ($routeParams.districtID) ? parseInt($routeParams.districtID) : 0;
+    $rootScope.title = (districtID > 0) ? 'Edit District' : 'Add District';
+    $scope.buttonText = (districtID > 0) ? 'Update District' : 'Add New District';
+    var original = district.data;
+    original._id = districtID;
+    $scope.district = angular.copy(original);
+    $scope.district._id = districtID;
+   
+   ////////////regions//////////
+     regionService.getRegions().then(function(data) {
+        $scope.regions = data.data;
+    });
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.district);
+    }
+
+    $scope.deleteDistrict = function(district) {
+        $location.path('/');
+        if (confirm("Are you sure to delete District ID: " + $scope.district._id) == true)
+                districtService.deleteDistrict(district.district_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.saveDistrict = function(district) {
+        $location.path('/');
+        if (districtID <= 0) {
+            districtService.insertDistrict(district);
+        }
+        else {
+            districtService.updateDistrict(districtID, district);
+        }
+    };
+
+});
+
+
+//SubCategoryOfSupport Controllers----------------------------------------------------------
+app.controller('SubCategoryOfSupportListCtrl', function($scope, subCategoryOfSupportService) {
+    subCategoryOfSupportService.getSubCategoryOfSupports().then(function(data) {
+        $scope.subCategoryOfSupports = data.data;
+    });
+});
+
+
+app.controller('SubCategoryOfSupportEditCtrl', function($scope, $rootScope, $location, $routeParams, subCategoryOfSupportService, typeOfSupportService, subCategoryOfSupport) {
+    var subCategoryOfSupportID = ($routeParams.subCategoryOfSupportID) ? parseInt($routeParams.subCategoryOfSupportID) : 0;
+    $rootScope.title = (subCategoryOfSupportID > 0) ? 'Edit SubCategory Of Support' : 'Add SubCategory Of Support';
+    $scope.buttonText = (subCategoryOfSupportID > 0) ? 'Update SubCategory Of Support' : 'Add New SubCategory Of Support';
+    var original = subCategoryOfSupport.data;
+    original._id = subCategoryOfSupportID;
+    $scope.subCategoryOfSupport = angular.copy(original);
+    $scope.subCategoryOfSupport._id = subCategoryOfSupportID;
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.subCategoryOfSupport);
+    }
+    
+    //type of support
+    typeOfSupportService.getTypeOfSupports().then(function(data) {
+        $scope.typeOfSupports = data.data;
+    });
+
+    $scope.deleteSubCategoryOfSupport = function(subCategoryOfSupport) {
+        $location.path('/');
+        if (confirm("Are you sure to delete SubCategory Of Support ID: " + $scope.subCategoryOfSupport._id) == true)
+            subCategoryOfSupportService.deleteSubCategoryOfSupport(subCategoryOfSupport.sub_category_of_support_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.saveSubCategoryOfSupport = function(subCategoryOfSupport) {
+        $location.path('/');
+        if (subCategoryOfSupportID <= 0) {
+            subCategoryOfSupportService.insertSubCategoryOfSupport(subCategoryOfSupport);
+        }
+        else {
+            subCategoryOfSupportService.updateSubCategoryOfSupport(subCategoryOfSupportID, subCategoryOfSupport);
+        }
+    };
+});
+
+
 //////////////////////////////Routes////////////////////////////////////////////
 
 app.config(['$routeProvider',
@@ -695,7 +870,7 @@ app.config(['$routeProvider',
                 })
                 .when('/', {
                     title: 'Login',
-                    templateUrl: 'partials/login.html',
+                    templateUrl: 'partials/home.html',
                     controller: 'authCtrl',
                     role: '0'
                 })
@@ -861,7 +1036,42 @@ app.config(['$routeProvider',
                         }
                     }
                 })
-
+                
+                .when('/districts', {
+                    title: 'District',
+                    templateUrl: 'partials/district/district-list.html',
+                    controller: 'DistrictListCtrl'
+                })
+                .when('/edit-district/:districtID', {
+                    title: 'Edit District',
+                    templateUrl: 'partials/district/edit-district.html',
+                    controller: 'DistrictEditCtrl',
+                    resolve: {
+                        district: function(districtService, $route) {
+                            var districtID = $route.current.params.districtID;
+                            return districtService.getDistrict(districtID);
+                        }
+                    }
+                })
+                
+                ////////////////////SubCategory Of Support Routes///////////////////////////
+                .when('/subCategoryOfSupports', {
+                    title: 'SubCategory Of Support',
+                    templateUrl: 'partials/subCategoryOfSupport/subCategoryOfSupport-list.html',
+                    controller: 'SubCategoryOfSupportListCtrl'
+                })
+                .when('/edit-subCategoryOfSupport/:subCategoryOfSupportID', {
+                    title: 'Edit SubCategory Of Support',
+                    templateUrl: 'partials/subCategoryOfSupport/edit-subCategoryOfSupport.html',
+                    controller: 'SubCategoryOfSupportEditCtrl',
+                    resolve: {
+                        subCategoryOfSupport: function(subCategoryOfSupportService, $route) {
+                            var subCategoryOfSupportID = $route.current.params.subCategoryOfSupportID;
+                            return subCategoryOfSupportService.getSubCategoryOfSupport(subCategoryOfSupportID);
+                        }
+                    }
+                })
+                
                 .otherwise({
                     redirectTo: '/login'
                 });

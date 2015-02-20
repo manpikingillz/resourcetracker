@@ -999,6 +999,212 @@ class API extends REST {
         } else
             $this->response('', 204); // If no records "No Content" status
     }
+    
+    //  District Service----------------------------------------------
+    private function districts() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT distinct o.district_id, o.district_name FROM district o order by o.district_name desc";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function district() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT distinct o.district_id, o.district_name FROM district o where o.district_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertDistrict() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $district = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('district_name','region_id');
+        $keys = array_keys($district);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the district received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $district[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO district(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($district)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "District Created Successfully.", "data" => $district);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updateDistrict() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $district = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $district['id'];
+        $column_names = array('district_name');
+        $keys = array_keys($district['district']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the district received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $district['district'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE district SET " . trim($columns, ',') . " WHERE district_id=$id";
+        if (!empty($district)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "District " . $id . " Updated Successfully.", "data" => $district);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deleteDistrict() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM district WHERE district_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
+    
+    //  SubCategoryOfSupport Service----------------------------------------------
+    private function subCategoryOfSupports() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT distinct o.sub_category_of_support_id, o.sub_category_of_support_name, t.type_of_support_name as type_of_support_name FROM sub_category_of_support o inner join type_of_support t on o.type_of_support_id = t.type_of_support_id order by t.type_of_support_name desc";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function subCategoryOfSupport() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT distinct o.sub_category_of_support_id, o.sub_category_of_support_name FROM sub_category_of_support o where o.sub_category_of_support_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertSubCategoryOfSupport() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $sub_category_of_support = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('sub_category_of_support_name');
+        $keys = array_keys($sub_category_of_support);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the sub_category_of_support received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $sub_category_of_support[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO sub_category_of_support(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($sub_category_of_support)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "SubCategory Of Support Created Successfully.", "data" => $sub_category_of_support);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updateSubCategoryOfSupport() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $sub_category_of_support = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $sub_category_of_support['id'];
+        $column_names = array('sub_category_of_support_name');
+        $keys = array_keys($sub_category_of_support['sub_category_of_support']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the sub_category_of_support received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $sub_category_of_support['sub_category_of_support'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE sub_category_of_support SET " . trim($columns, ',') . " WHERE sub_category_of_support_id=$id";
+        if (!empty($sub_category_of_support)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "SubCategory Of Support " . $id . " Updated Successfully.", "data" => $sub_category_of_support);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deleteSubCategoryOfSupport() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM sub_category_of_support WHERE sub_category_of_support_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
 
     /*
      * 	Encode array into JSON

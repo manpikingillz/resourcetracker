@@ -11,7 +11,7 @@
         <style type="text/css">
     ul>li, a{cursor: pointer;}
     </style>
-        <!--<link href="css/custom.css" rel="stylesheet">-->
+        <link href="css/custom.css" rel="stylesheet">
         <!--<link href="css/toaster.css" rel="stylesheet">-->
 
         <!--Custom sytles for navigation bar-->
@@ -44,12 +44,13 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#/login">Resource Tracker</a>
+                        <a class="navbar-brand" href="#/">Resource Tracker</a>
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
                             <!--<li class="active"><a href="#/customers">Customers</a></li>-->
                             <li><a href="#">Projects</a></li>
+                            <!--<li><a href="#/customers">Customers</a></li>-->
                             <li><a href="#">Budget</a></li>
                             <li><a href="#">Organisationns</a></li>
                             <li><a href="#">Partners</a></li>
@@ -59,11 +60,11 @@
                                     <li class="dropdown-header">Lookups</li>
                                     <li><a href="#/currencies">Currency</a></li>
                                     <li><a href="#/regions">Region</a></li>
-                                    <li><a href="#">District</a></li>
+                                    <li><a href="#/districts">District</a></li>
                                     <li><a href="#/financialYears">Financial Year</a></li>
                                     <li><a href="#/organisationTypes">Organisation Type</a></li>
                                     <li><a href="#/typeOfSupports">Type of support</a></li>
-                                    <li><a href="#">Subcategory of support</a></li>
+                                    <li><a href="#/subCategoryOfSupports">Subcategory of support</a></li>
                                     <li><a href="#/partnerTypes">Partner Type</a></li>
                                     <li><a href="#/authoritys">Authority</a></li>
                                     <li><a href="#/costCategorys">Cost Category</a></li> 
@@ -71,15 +72,15 @@
                                     <li class="divider"></li>
                                     <li class="dropdown-header">User Management</li>
                                     <li><a href="#">Users</a></li>
-                                    <li><a href="#">User Roles</a></li>  
+                                    <!--<li><a href="#">User Roles</a></li>-->  
                                 </ul>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown">TWESIGOMWE GILBERT<b class="caret"></b></a>
+                                <a class="dropdown-toggle" data-toggle="dropdown">Login<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Logout</a></li>
+                                    <li><a href="#/login">Login</a></li>
                                     <li class="divider">
                                 </ul>
                             </li>
