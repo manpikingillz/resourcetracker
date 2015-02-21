@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-md-12" ng-show="nationalBudgetCostCategorys.length > 0">
+
+        <nav class= "navbar navbar-default" role= "navigation" >
+            <div class= "navbar-header" >
+                <a class="btn btn-lg btn-success" href="#/edit-nationalBudgetCostCategory/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add new National Budget Cost Category</a>
+            </div>
+        </nav>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <th>Project National Budget&nbsp;</th>
+                <th>Cost Category&nbsp;</th>
+                <th>Cost Category Amount&nbsp;</th>
+                <th>Action&nbsp;</th>
+            </thead>
+            
+            <tbody>
+                <tr ng-repeat="data in nationalBudgetCostCategorys">
+                    <td>{{data.project_national_budget}}</td>
+                    <td>{{data.cost_category_name}}</td>
+                     <td>{{data.national_budget_amount}}</td>
+                    <td style="width: 100px"><a href="#/edit-nationalBudgetCostCategory/{{data.national_budget_cost_category_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp; Edit National Budget Cost Category</a></td>
+                    <!--                <td>
+                                        <div class="btn-group">
+                                            <a href="#/edit-customer/{{data.customerNumber}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp;</a>
+                                            <button class="btn" type="button" ng-click="deleteCustomer(customer)" >&nbsp;<i class="glyphicon glyphicon-trash"></i>&nbsp;</button>
+                                        </div>
+                                    </td>-->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12" ng-show="nationalBudgetCostCategorys.length == 0">
+        <div class="col-md-12">
+            <h4>No Cost Categories found</h4>
+        </div>
+    </div>
+</div>

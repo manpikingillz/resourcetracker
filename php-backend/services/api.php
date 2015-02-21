@@ -1726,6 +1726,317 @@ class API extends REST {
             $this->response('', 204); // If no records "No Content" status
     }
     
+    //  ProjectSubCategoryOfSupportBudget Service----------------------------------------------
+    private function projectSubCategoryOfSupportBudgets() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT p.project_sub_category_of_support_budget_id, tsb.budget_amount as type_of_support_budget_amount, sof.sub_category_of_support_name, p.budget_amount as sub_category_of_support_budget_amount FROM project_sub_category_of_support_budget p inner join type_of_support_budget tsb on p.type_of_support_budget_id = tsb.type_of_support_budget_id inner join sub_category_of_support sof on p.sub_category_of_support_id = sof.sub_category_of_support_id;";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function projectSubCategoryOfSupportBudget() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT p.project_sub_category_of_support_budget_id, tsb.budget_amount as type_of_support_budget_amount, sof.sub_category_of_support_name, p.budget_amount as sub_category_of_support_budget_amount FROM project_sub_category_of_support_budget p inner join type_of_support_budget tsb on p.type_of_support_budget_id = tsb.type_of_support_budget_id inner join sub_category_of_support sof on p.sub_category_of_support_id = sof.sub_category_of_support_id where p.project_sub_category_of_support_budget_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertProjectSubCategoryOfSupportBudget() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $project_sub_category_of_support_budget = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('type_of_support_budget_id','sub_category_of_support_id','budget_amount');
+        $keys = array_keys($project_sub_category_of_support_budget);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the project_sub_category_of_support_budget received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $project_sub_category_of_support_budget[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO project_sub_category_of_support_budget(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($project_sub_category_of_support_budget)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Project SubCategory Of Support Budget Created Successfully.", "data" => $project_sub_category_of_support_budget);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updateProjectSubCategoryOfSupportBudget() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $project_sub_category_of_support_budget = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $project_sub_category_of_support_budget['id'];
+        $column_names = array('type_of_support_budget_id','sub_category_of_support_id','budget_amount');
+        $keys = array_keys($project_sub_category_of_support_budget['project_sub_category_of_support_budget']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the project_sub_category_of_support_budget received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $project_sub_category_of_support_budget['project_sub_category_of_support_budget'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE project_sub_category_of_support_budget SET " . trim($columns, ',') . " WHERE project_sub_category_of_support_budget_id=$id";
+        if (!empty($project_sub_category_of_support_budget)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Project SubCategory Of Support Budget " . $id . " Updated Successfully.", "data" => $project_sub_category_of_support_budget);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deleteProjectSubCategoryOfSupportBudget() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM project_sub_category_of_support_budget WHERE project_sub_category_of_support_budget_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
+    
+    
+        
+     //  NationalBudget Service----------------------------------------------
+    private function nationalBudgets() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT nb.national_budget_id, b.total_budget, nb.budget_amount as national_budget_amount, b.project_and_total_amount FROM national_budget nb inner join (SELECT b.budget_id, fc.currency_name as financing_currency, sc.currency_name as spending_currency, f.financial_year_name, b.total_budget, p.project_name, concat(p.project_name, ' ( ', b.total_budget, ' )') as project_and_total_amount FROM budget b inner join currency fc on b.financing_currency_id = fc.currency_id inner join currency sc on b.spending_currency_id = sc.currency_id inner join financial_year f on b.financial_year_id = f.financial_year_id inner join project p on b.project_id = p.project_id) b on nb.budget_id = b.budget_id;";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function nationalBudget() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT nb.national_budget_id, b.total_budget, nb.budget_amount as national_budget_amount, b.project_and_total_amount FROM national_budget nb inner join (SELECT b.budget_id, fc.currency_name as financing_currency, sc.currency_name as spending_currency, f.financial_year_name, b.total_budget, p.project_name, concat(p.project_name, ' ( ', b.total_budget, ' )') as project_and_total_amount FROM budget b inner join currency fc on b.financing_currency_id = fc.currency_id inner join currency sc on b.spending_currency_id = sc.currency_id inner join financial_year f on b.financial_year_id = f.financial_year_id inner join project p on b.project_id = p.project_id) b on nb.budget_id = b.budget_id where nb.national_budget_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertNationalBudget() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $national_budget = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('budget_id','budget_amount');
+        $keys = array_keys($national_budget);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the national_budget received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $national_budget[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO national_budget(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($national_budget)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "National Budget Created Successfully.", "data" => $national_budget);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updateNationalBudget() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $national_budget = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $national_budget['id'];
+        $column_names = array('budget_id','budget_amount');
+        $keys = array_keys($national_budget['national_budget']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the national_budget received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $national_budget['national_budget'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE national_budget SET " . trim($columns, ',') . " WHERE national_budget_id=$id";
+        if (!empty($national_budget)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "National Budget " . $id . " Updated Successfully.", "data" => $national_budget);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deleteNationalBudget() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM national_budget WHERE national_budget_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
+    
+     //  NationalBudgetCostCategory Service----------------------------------------------
+    private function nationalBudgetCostCategorys() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT distinct a.national_budget_cost_category_id,cc.cost_category_name, a.national_budget_amount, concat(b.project_and_total_amount,' - National Budget -', b.national_budget_amount) as project_national_budget  from national_budget_cost_category a inner join cost_category cc on a.cost_category_id = cc.cost_category_id inner join (SELECT nb.national_budget_id, b.total_budget, nb.budget_amount as national_budget_amount, b.project_and_total_amount FROM national_budget nb inner join (SELECT b.budget_id, fc.currency_name as financing_currency, sc.currency_name as spending_currency, f.financial_year_name, b.total_budget, p.project_name, concat(p.project_name, ' ( ', b.total_budget, ' )') as project_and_total_amount FROM budget b inner join currency fc on b.financing_currency_id = fc.currency_id inner join currency sc on b.spending_currency_id = sc.currency_id inner join financial_year f on b.financial_year_id = f.financial_year_id inner join project p on b.project_id = p.project_id) b on nb.budget_id = b.budget_id) b on a.national_budget_id = b.national_budget_id;
+";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function nationalBudgetCostCategory() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT national_budget_cost_category_id, national_budget_id, cost_category_id, national_budget_amount from national_budget_cost_category where national_budget_cost_category_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertNationalBudgetCostCategory() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $national_budget_cost_category = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('national_budget_id','cost_category_id','national_budget_amount');
+        $keys = array_keys($national_budget_cost_category);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the national_budget_cost_category received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $national_budget_cost_category[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO national_budget_cost_category(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($national_budget_cost_category)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "National Budget Cost Category Created Successfully.", "data" => $national_budget_cost_category);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updateNationalBudgetCostCategory() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $national_budget_cost_category = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $national_budget_cost_category['id'];
+        $column_names = array('national_budget_id','cost_category_id','national_budget_amount');
+        $keys = array_keys($national_budget_cost_category['national_budget_cost_category']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the national_budget_cost_category received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $national_budget_cost_category['national_budget_cost_category'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE national_budget_cost_category SET " . trim($columns, ',') . " WHERE national_budget_cost_category_id=$id";
+        if (!empty($national_budget_cost_category)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "National Budget Cost Category " . $id . " Updated Successfully.", "data" => $national_budget_cost_category);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deleteNationalBudgetCostCategory() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM national_budget_cost_category WHERE national_budget_cost_category_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
     
     /*
      * 	Encode array into JSON

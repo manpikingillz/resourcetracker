@@ -565,6 +565,110 @@ app.factory("typeOfSupportBudgetService", ['$http', function($http) {
         return obj;
     }]);
 
+
+    //ProjectSubCategoryOfSupportBudget Service--------------------------------------------------------------
+app.factory("projectSubCategoryOfSupportBudgetService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
+
+        obj.getProjectSubCategoryOfSupportBudgets = function() {
+            return $http.get(serviceBase + 'projectSubCategoryOfSupportBudgets');
+        }
+
+        obj.getProjectSubCategoryOfSupportBudget = function(projectSubCategoryOfSupportBudgetID) {
+            return $http.get(serviceBase + 'projectSubCategoryOfSupportBudget?id=' + projectSubCategoryOfSupportBudgetID);
+        }
+
+        obj.insertProjectSubCategoryOfSupportBudget = function(projectSubCategoryOfSupportBudget) {
+            return $http.post(serviceBase + 'insertProjectSubCategoryOfSupportBudget', projectSubCategoryOfSupportBudget).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updateProjectSubCategoryOfSupportBudget = function(id, projectSubCategoryOfSupportBudget) {
+            return $http.post(serviceBase + 'updateProjectSubCategoryOfSupportBudget', {id: id, project_sub_category_of_support_budget: projectSubCategoryOfSupportBudget}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deleteProjectSubCategoryOfSupportBudget = function(id) {
+            return $http.delete(serviceBase + 'deleteProjectSubCategoryOfSupportBudget?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
+
+
+//NationalBudget Service--------------------------------------------------------------
+app.factory("nationalBudgetService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
+
+        obj.getNationalBudgets = function() {
+            return $http.get(serviceBase + 'nationalBudgets');
+        }
+
+        obj.getNationalBudget = function(nationalBudgetID) {
+            return $http.get(serviceBase + 'nationalBudget?id=' + nationalBudgetID);
+        }
+
+        obj.insertNationalBudget = function(nationalBudget) {
+            return $http.post(serviceBase + 'insertNationalBudget', nationalBudget).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updateNationalBudget = function(id, nationalBudget) {
+            return $http.post(serviceBase + 'updateNationalBudget', {id: id, national_budget: nationalBudget}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deleteNationalBudget = function(id) {
+            return $http.delete(serviceBase + 'deleteNationalBudget?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
+
+//NationalBudgetCostCategory Service--------------------------------------------------------------
+app.factory("nationalBudgetCostCategoryService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
+
+        obj.getNationalBudgetCostCategorys = function() {
+            return $http.get(serviceBase + 'nationalBudgetCostCategorys');
+        }
+
+        obj.getNationalBudgetCostCategory = function(nationalBudgetCostCategoryID) {
+            return $http.get(serviceBase + 'nationalBudgetCostCategory?id=' + nationalBudgetCostCategoryID);
+        }
+
+        obj.insertNationalBudgetCostCategory = function(nationalBudgetCostCategory) {
+            return $http.post(serviceBase + 'insertNationalBudgetCostCategory', nationalBudgetCostCategory).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updateNationalBudgetCostCategory = function(id, nationalBudgetCostCategory) {
+            return $http.post(serviceBase + 'updateNationalBudgetCostCategory', {id: id, national_budget_cost_category: nationalBudgetCostCategory}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deleteNationalBudgetCostCategory = function(id) {
+            return $http.delete(serviceBase + 'deleteNationalBudgetCostCategory?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
+
 ////////////////Controllers/////////////////////////////////////////////////////
 
 //Customer Controllers----------------------------------------------------------
@@ -1260,6 +1364,158 @@ app.controller('TypeOfSupportBudgetEditCtrl', function($scope, $rootScope, $loca
     };
 });
 
+//ProjectSubCategoryOfSupportBudget Controllers----------------------------------------------------------
+app.controller('ProjectSubCategoryOfSupportBudgetListCtrl', function($scope, projectSubCategoryOfSupportBudgetService) {
+    projectSubCategoryOfSupportBudgetService.getProjectSubCategoryOfSupportBudgets().then(function(data) {
+        $scope.projectSubCategoryOfSupportBudgets = data.data;
+    });
+});
+
+
+app.controller('ProjectSubCategoryOfSupportBudgetEditCtrl', function($scope, $rootScope, $location, $routeParams, projectSubCategoryOfSupportBudgetService,typeOfSupportBudgetService, subCategoryOfSupportService, projectSubCategoryOfSupportBudget) {
+    var projectSubCategoryOfSupportBudgetID = ($routeParams.projectSubCategoryOfSupportBudgetID) ? parseInt($routeParams.projectSubCategoryOfSupportBudgetID) : 0;
+    $rootScope.title = (projectSubCategoryOfSupportBudgetID > 0) ? 'Edit Project SubCategory Of Support Budget' : 'Add Project SubCategory Of Support Budget';
+    $scope.buttonText = (projectSubCategoryOfSupportBudgetID > 0) ? 'Update Project SubCategory Of Support Budget' : 'Add New Project SubCategory Of Support Budget';
+    var original = projectSubCategoryOfSupportBudget.data;
+    original._id = projectSubCategoryOfSupportBudgetID;
+    $scope.projectSubCategoryOfSupportBudget = angular.copy(original);
+    $scope.projectSubCategoryOfSupportBudget._id = projectSubCategoryOfSupportBudgetID;
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.projectSubCategoryOfSupportBudget);
+    }
+
+    //Type of support Budget list
+    typeOfSupportBudgetService.getTypeOfSupportBudgets().then(function(data) {
+        $scope.typeOfSupportBudgets = data.data;
+    });
+    
+    //SubCategory of support list
+    subCategoryOfSupportService.getSubCategoryOfSupports().then(function(data) {
+        $scope.subCategoryOfSupports = data.data;
+    });
+    
+
+    $scope.deleteProjectSubCategoryOfSupportBudget = function(projectSubCategoryOfSupportBudget) {
+        $location.path('/projectSubCategoryOfSupportBudgets');
+        if (confirm("Are you sure to delete Project SubCategory Of Support Budget ID: " + $scope.projectSubCategoryOfSupportBudget._id) == true)
+            projectSubCategoryOfSupportBudgetService.deleteProjectSubCategoryOfSupportBudget(projectSubCategoryOfSupportBudget.project_sub_category_of_support_budget_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.saveProjectSubCategoryOfSupportBudget = function(projectSubCategoryOfSupportBudget) {
+        $location.path('/projectSubCategoryOfSupportBudgets');
+        if (projectSubCategoryOfSupportBudgetID <= 0) {
+            projectSubCategoryOfSupportBudgetService.insertProjectSubCategoryOfSupportBudget(projectSubCategoryOfSupportBudget);
+        }
+        else {
+            projectSubCategoryOfSupportBudgetService.updateProjectSubCategoryOfSupportBudget(projectSubCategoryOfSupportBudgetID, projectSubCategoryOfSupportBudget);
+        }
+    };
+});
+
+
+//NationalBudget Controllers----------------------------------------------------------
+app.controller('NationalBudgetListCtrl', function($scope, nationalBudgetService) {
+    nationalBudgetService.getNationalBudgets().then(function(data) {
+        $scope.nationalBudgets = data.data;
+    });
+});
+
+
+app.controller('NationalBudgetEditCtrl', function($scope, $rootScope, $location, $routeParams, nationalBudgetService,typeOfSupportService, budgetService, nationalBudget) {
+    var nationalBudgetID = ($routeParams.nationalBudgetID) ? parseInt($routeParams.nationalBudgetID) : 0;
+    $rootScope.title = (nationalBudgetID > 0) ? 'Edit National Budget' : 'Add National Budget';
+    $scope.buttonText = (nationalBudgetID > 0) ? 'Update National Budget' : 'Add New National Budget';
+    var original = nationalBudget.data;
+    original._id = nationalBudgetID;
+    $scope.nationalBudget = angular.copy(original);
+    $scope.nationalBudget._id = nationalBudgetID;
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.nationalBudget);
+    }
+    
+    //Budget List
+    budgetService.getBudgets().then(function(data) {
+        $scope.budgets = data.data;
+    });
+    
+
+    $scope.deleteNationalBudget = function(nationalBudget) {
+        $location.path('/nationalBudgets');
+        if (confirm("Are you sure to delete National Budget ID: " + $scope.nationalBudget._id) == true)
+            nationalBudgetService.deleteNationalBudget(nationalBudget.national_budget_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.saveNationalBudget = function(nationalBudget) {
+        $location.path('/nationalBudgets');
+        if (nationalBudgetID <= 0) {
+            nationalBudgetService.insertNationalBudget(nationalBudget);
+        }
+        else {
+            nationalBudgetService.updateNationalBudget(nationalBudgetID, nationalBudget);
+        }
+    };
+});
+
+//NationalBudgetCostCategory Controllers----------------------------------------------------------
+app.controller('NationalBudgetCostCategoryListCtrl', function($scope, nationalBudgetCostCategoryService) {
+    nationalBudgetCostCategoryService.getNationalBudgetCostCategorys().then(function(data) {
+        $scope.nationalBudgetCostCategorys = data.data;
+    });
+});
+
+
+app.controller('NationalBudgetCostCategoryEditCtrl', function($scope, $rootScope, $location, $routeParams, nationalBudgetCostCategoryService,projectService,nationalBudgetService, costCategoryService, nationalBudgetCostCategory) {
+    var nationalBudgetCostCategoryID = ($routeParams.nationalBudgetCostCategoryID) ? parseInt($routeParams.nationalBudgetCostCategoryID) : 0;
+    $rootScope.title = (nationalBudgetCostCategoryID > 0) ? 'Edit National Budget Cost Category' : 'Add National Budget Cost Category';
+    $scope.buttonText = (nationalBudgetCostCategoryID > 0) ? 'Update National Budget Cost Category' : 'Add New National Budget Cost Category';
+    var original = nationalBudgetCostCategory.data;
+    original._id = nationalBudgetCostCategoryID;
+    $scope.nationalBudgetCostCategory = angular.copy(original);
+    $scope.nationalBudgetCostCategory._id = nationalBudgetCostCategoryID;
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.nationalBudgetCostCategory);
+    }
+    
+    //National Budget List
+    nationalBudgetService.getNationalBudgets().then(function(data) {
+        $scope.nationalBudgets = data.data;
+    });
+    
+    projectService.getProjects().then(function(data) {
+        $scope.projects = data.data;
+    });
+    
+    //Cost Category List
+    costCategoryService.getCostCategorys().then(function(data) {
+        $scope.costCategorys = data.data;
+    });
+    
+
+    $scope.deleteNationalBudgetCostCategory = function(nationalBudgetCostCategory) {
+        $location.path('/nationalBudgetCostCategorys');
+        if (confirm("Are you sure to delete National Budget Cost Category ID: " + $scope.nationalBudgetCostCategory._id) == true)
+            nationalBudgetCostCategoryService.deleteNationalBudgetCostCategory(nationalBudgetCostCategory.national_budget_cost_category_cost_category_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.saveNationalBudgetCostCategory = function(nationalBudgetCostCategory) {
+        $location.path('/nationalBudgetCostCategorys');
+        if (nationalBudgetCostCategoryID <= 0) {
+            nationalBudgetCostCategoryService.insertNationalBudgetCostCategory(nationalBudgetCostCategory);
+        }
+        else {
+            nationalBudgetCostCategoryService.updateNationalBudgetCostCategory(nationalBudgetCostCategoryID, nationalBudgetCostCategory);
+        }
+    };
+});
+
+
+
 //////////////////////////////Routes////////////////////////////////////////////
 
 app.config(['$routeProvider',
@@ -1581,6 +1837,60 @@ app.config(['$routeProvider',
                     }
                 })
 
+                ////////////////////Project SubCategory Of Support Budget Routes///////////////////////////
+                .when('/projectSubCategoryOfSupportBudgets', {
+                    title: 'Project SubCategory Of Support Budget',
+                    templateUrl: 'partials/projectSubCategoryOfSupportBudget/projectSubCategoryOfSupportBudget-list.html',
+                    controller: 'ProjectSubCategoryOfSupportBudgetListCtrl'
+                })
+                .when('/edit-projectSubCategoryOfSupportBudget/:projectSubCategoryOfSupportBudgetID', {
+                    title: 'Edit Project SubCategory Of Support Budget',
+                    templateUrl: 'partials/projectSubCategoryOfSupportBudget/edit-projectSubCategoryOfSupportBudget.html',
+                    controller: 'ProjectSubCategoryOfSupportBudgetEditCtrl',
+                    resolve: {
+                        projectSubCategoryOfSupportBudget: function(projectSubCategoryOfSupportBudgetService, $route) {
+                            var projectSubCategoryOfSupportBudgetID = $route.current.params.projectSubCategoryOfSupportBudgetID;
+                            return projectSubCategoryOfSupportBudgetService.getProjectSubCategoryOfSupportBudget(projectSubCategoryOfSupportBudgetID);
+                        }
+                    }
+                })
+                
+                ////////////////////National Budget Routes///////////////////////////
+                .when('/nationalBudgets', {
+                    title: 'National Budget',
+                    templateUrl: 'partials/nationalBudget/nationalBudget-list.html',
+                    controller: 'NationalBudgetListCtrl'
+                })
+                .when('/edit-nationalBudget/:nationalBudgetID', {
+                    title: 'Edit National Budget',
+                    templateUrl: 'partials/nationalBudget/edit-nationalBudget.html',
+                    controller: 'NationalBudgetEditCtrl',
+                    resolve: {
+                        nationalBudget: function(nationalBudgetService, $route) {
+                            var nationalBudgetID = $route.current.params.nationalBudgetID;
+                            return nationalBudgetService.getNationalBudget(nationalBudgetID);
+                        }
+                    }
+                })
+                
+                ////////////////////National Budget Cost Category Routes///////////////////////////
+                .when('/nationalBudgetCostCategorys', {
+                    title: 'National Budget Cost Category',
+                    templateUrl: 'partials/nationalBudgetCostCategory/nationalBudgetCostCategory-list.html',
+                    controller: 'NationalBudgetCostCategoryListCtrl'
+                })
+                .when('/edit-nationalBudgetCostCategory/:nationalBudgetCostCategoryID', {
+                    title: 'Edit National Budget Cost Category',
+                    templateUrl: 'partials/nationalBudgetCostCategory/edit-nationalBudgetCostCategory.html',
+                    controller: 'NationalBudgetCostCategoryEditCtrl',
+                    resolve: {
+                        nationalBudgetCostCategory: function(nationalBudgetCostCategoryService, $route) {
+                            var nationalBudgetCostCategoryID = $route.current.params.nationalBudgetCostCategoryID;
+                            return nationalBudgetCostCategoryService.getNationalBudgetCostCategory(nationalBudgetCostCategoryID);
+                        }
+                    }
+                })
+                
                 .otherwise({
                     redirectTo: '/login'
                 });

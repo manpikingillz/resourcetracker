@@ -13,8 +13,8 @@
 
 <nav class= "navbar navbar-default" role= "navigation" >
     <div class= "navbar-header" >
-        <a class= "navbar-brand" href= "#/typeOfSupportBudgets"><i class="glyphicon glyphicon-th-large"></i> Type Of Support Budget List </a>
-        <a ng-show="typeOfSupportBudget._id" class= "navbar-brand" href= "#/edit-typeOfSupportBudget/0"><i class="glyphicon glyphicon-plus"></i> Create Type Of Support Budget </a>
+        <a class= "navbar-brand" href= "#/nationalBudgetCostCategorys"><i class="glyphicon glyphicon-th-large"></i> National Budget List </a>
+        <a ng-show="nationalBudgetCostCategory._id" class= "navbar-brand" href= "#/edit-nationalBudgetCostCategory/0"><i class="glyphicon glyphicon-plus"></i> Create National Budget </a>
         <!--<a ng-show="customer._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Customer No: {{customer._id}}</a>-->
     </div>
 </nav>
@@ -31,41 +31,41 @@
             <div class="form-group">
                 <label class="col-sm-2 " >Choose Project<span class="required">*</span></label>
                 <div class="col-sm-4">
-                    <select  class="form-control dropdown" id="requiredAction" ng-model="typeOfSupportBudget.budget_id" 
-                             ng-required="true" ng-options="budget.project_and_total_amount for budget in budgets track by budget._id"
-                             >
-                        <option value="">Select...</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 " >Type Of Support<span class="required">*</span></label>
-                <div class="col-sm-4">
-                    <select  class="form-control dropdown" id="requiredAction" ng-model="typeOfSupportBudget.type_of_support_id" 
-                             ng-required="true" ng-options="typeOfSupport.type_of_support_name for typeOfSupport in typeOfSupports track by typeOfSupport._id"
+                    <select  class="form-control dropdown" id="requiredAction" ng-model="nationalBudgetCostCategory.national_budget_id" 
+                             ng-required="true" ng-options="nationalBudget.project_and_total_amount for nationalBudget in nationalBudgets track by nationalBudget._id"
                              >
                         <option value="">Select...</option>
                     </select>
                 </div>
             </div>
             
+            <div class="form-group">
+                <label class="col-sm-2 " >Cost Category<span class="required">*</span></label>
+                <div class="col-sm-4">
+                    <select  class="form-control dropdown" id="requiredAction" ng-model="nationalBudgetCostCategory.cost_category_id" 
+                             ng-required="true" ng-options="costCategory.cost_category_name for costCategory in costCategorys track by costCategory._id"
+                             >
+                        <option value="">Select...</option>
+                    </select>
+                </div>
+            </div>
+
             <div class= "form-group">
-                <label class= "col-md-2">Type Of Support Budget Amount</label>
+                <label class= "col-md-2">National Budget Amount</label>
                 <div class="col-md-4">
-                    <input ng-model="typeOfSupportBudget.budget_amount" type= "text" class= "form-control" placeholder= "Enter type of support budget amount"/>
+                    <input ng-model="nationalBudgetCostCategory.national_budget_amount" type= "text" class= "form-control" placeholder= "Enter national budget amount"/>
                 </div>
             </div>
 
             <div class= "form-group">
                 <label class= "col-md-2"></label>
                 <div class="col-md-4">
-                    <a href="#/typeOfSupportBudgets" class="btn">Cancel</a>
-                    <button ng-click="saveTypeOfSupportBudget(typeOfSupportBudget);" 
+                    <a href="#/nationalBudgetCostCategorys" class="btn">Cancel</a>
+                    <button ng-click="saveNationalBudgetCostCategory(nationalBudgetCostCategory);" 
                             ng-disabled="isClean() || myForm.$invalid"
                             class="btn btn-primary">{{buttonText}}</button>
-                    <button ng-click="deleteTypeOfSupportBudget(typeOfSupportBudget)"
-                            ng-show="typeOfSupportBudget._id" class="btn btn-warning">Delete</button>
+                    <button ng-click="deleteNationalBudgetCostCategory(nationalBudgetCostCategory)"
+                            ng-show="nationalBudgetCostCategory._id" class="btn btn-warning">Delete</button>
                 </div>
             </div>
             

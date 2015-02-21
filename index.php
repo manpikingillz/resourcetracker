@@ -56,9 +56,9 @@
                                 <ul class="dropdown-menu">
                                     <li><a href="#/budgets">Project budget</a></li>
                                     <li><a href="#/typeOfSupportBudgets">Type of support budget</a></li>
-                                    <li><a href="#">Subcategory of support budget</a></li>
-                                    <li><a href="#">National budget</a></li>
-                                    <li><a href="#">National budget cost category</a></li>
+                                    <li><a href="#/projectSubCategoryOfSupportBudgets">Subcategory of support budget</a></li>
+                                    <li><a href="#/nationalBudgets">National budget</a></li>
+                                    <li><a href="#/nationalBudgetCostCategorys">National budget cost category</a></li>
                                     <li><a href="#">District partner budget</a></li>
                                     <li><a href="#">District partner cost category</a></li>
                                 </ul>

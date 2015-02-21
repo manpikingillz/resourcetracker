@@ -1,0 +1,67 @@
+﻿<style type="text/css">
+    .form-horizontal input.ng-invalid.ng-dirty {
+        border-color: #FA787E;
+    }
+
+    .form-horizontal input.ng-valid.ng-dirty {
+        border-color: #78FA89;
+    }
+</style>
+<!--<div class="view">-->
+<!--<div class="container">-->
+
+
+<nav class= "navbar navbar-default" role= "navigation" >
+    <div class= "navbar-header" >
+        <a class= "navbar-brand" href= "#/nationalBudgets"><i class="glyphicon glyphicon-th-large"></i> National Budget List </a>
+        <a ng-show="nationalBudget._id" class= "navbar-brand" href= "#/edit-nationalBudget/0"><i class="glyphicon glyphicon-plus"></i> Create National Budget </a>
+        <!--<a ng-show="customer._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Customer No: {{customer._id}}</a>-->
+    </div>
+</nav>
+<header>
+    <h3 class="btn-primary">{{title}}</h3>
+</header>
+<!--<div class="row">-->
+
+<!--<div>-->
+<div class="col-md-12">
+    <form role="form" name="myForm" class="form-horizontal">
+        <div class="row">
+            
+            <div class="form-group">
+                <label class="col-sm-2 " >Total Project Budget<span class="required">*</span></label>
+                <div class="col-sm-4">
+                    <select  class="form-control dropdown" id="requiredAction" ng-model="nationalBudget.budget_id" 
+                             ng-required="true" ng-options="budget.project_and_total_amount for budget in budgets track by budget._id"
+                             >
+                        <option value="">Select...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-2">National Budget Amount</label>
+                <div class="col-md-4">
+                    <input ng-model="nationalBudget.budget_amount" type= "text" class= "form-control" placeholder= "Enter national budget amount"/>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-2"></label>
+                <div class="col-md-4">
+                    <a href="#/nationalBudgets" class="btn">Cancel</a>
+                    <button ng-click="saveNationalBudget(nationalBudget);" 
+                            ng-disabled="isClean() || myForm.$invalid"
+                            class="btn btn-primary">{{buttonText}}</button>
+                    <button ng-click="deleteNationalBudget(nationalBudget)"
+                            ng-show="nationalBudget._id" class="btn btn-warning">Delete</button>
+                </div>
+            </div>
+            
+        </div>
+    </form>
+</div>
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
