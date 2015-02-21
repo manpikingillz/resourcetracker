@@ -55,7 +55,7 @@
                                 <a class="dropdown-toggle" data-toggle="dropdown">Budget<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#/budgets">Project budget</a></li>
-                                    <li><a href="#">Type of support budget</a></li>
+                                    <li><a href="#/typeOfSupportBudgets">Type of support budget</a></li>
                                     <li><a href="#">Subcategory of support budget</a></li>
                                     <li><a href="#">National budget</a></li>
                                     <li><a href="#">National budget cost category</a></li>

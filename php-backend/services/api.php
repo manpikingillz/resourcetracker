@@ -1524,7 +1524,7 @@ class API extends REST {
         if ($this->get_request_method() != "GET") {
             $this->response('', 406);
         }
-        $query = "SELECT b.budget_id, fc.currency_name as financing_currency, sc.currency_name as spending_currency, f.financial_year_name, b.total_budget, p.project_name FROM budget b inner join currency fc on b.financing_currency_id = fc.currency_id inner join currency sc on b.spending_currency_id = sc.currency_id inner join financial_year f on b.financial_year_id = f.financial_year_id inner join project p on b.project_id = p.project_id;";
+        $query = "SELECT b.budget_id, fc.currency_name as financing_currency, sc.currency_name as spending_currency, f.financial_year_name, b.total_budget, p.project_name, concat(p.project_name, ' ( ', b.total_budget, ' )') as project_and_total_amount FROM budget b inner join currency fc on b.financing_currency_id = fc.currency_id inner join currency sc on b.spending_currency_id = sc.currency_id inner join financial_year f on b.financial_year_id = f.financial_year_id inner join project p on b.project_id = p.project_id;";
         $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 
         if ($r->num_rows > 0) {
@@ -1543,7 +1543,7 @@ class API extends REST {
         }
         $id = (int) $this->_request['id'];
         if ($id > 0) {
-            $query = "SELECT b.budget_id, fc.currency_name as financing_currency, sc.currency_name as spending_currency, f.financial_year_name, b.total_budget, p.project_name FROM budget b inner join currency fc on b.financing_currency_id = fc.currency_id inner join currency sc on b.spending_currency_id = sc.currency_id inner join financial_year f on b.financial_year_id = f.financial_year_id inner join project p on b.project_id = p.project_id where p.budget_id=$id";
+            $query = "SELECT b.budget_id, fc.currency_name as financing_currency, sc.currency_name as spending_currency, f.financial_year_name, b.total_budget, p.project_name, concat(p.project_name, ' ( ', b.total_budget, ' )') as project_and_total_amount FROM budget b inner join currency fc on b.financing_currency_id = fc.currency_id inner join currency sc on b.spending_currency_id = sc.currency_id inner join financial_year f on b.financial_year_id = f.financial_year_id inner join project p on b.project_id = p.project_id where p.budget_id=$id";
             $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
             if ($r->num_rows > 0) {
                 $result = $r->fetch_assoc();
@@ -1621,6 +1621,111 @@ class API extends REST {
         } else
             $this->response('', 204); // If no records "No Content" status
     }
+    
+    
+     //  TypeOfSupportBudget Service----------------------------------------------
+    private function typeOfSupportBudgets() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT tsb.type_of_support_budget_id, ts.type_of_support_name, b.total_budget, tsb.budget_amount, b.project_and_total_amount FROM type_of_support_budget tsb inner join type_of_support ts on tsb.type_of_support_id = ts.type_of_support_id inner join (SELECT b.budget_id, fc.currency_name as financing_currency, sc.currency_name as spending_currency, f.financial_year_name, b.total_budget, p.project_name, concat(p.project_name, ' ( ', b.total_budget, ' )') as project_and_total_amount FROM budget b inner join currency fc on b.financing_currency_id = fc.currency_id inner join currency sc on b.spending_currency_id = sc.currency_id inner join financial_year f on b.financial_year_id = f.financial_year_id inner join project p on b.project_id = p.project_id) b on tsb.budget_id = b.budget_id;";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function typeOfSupportBudget() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT tsb.type_of_support_budget_id, ts.type_of_support_name, b.total_budget, tsb.budget_amount FROM type_of_support_budget tsb inner join type_of_support ts on tsb.type_of_support_id = ts.type_of_support_id inner join budget b on tsb.budget_id = b.budget_id where tsb.type_of_support_budget_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertTypeOfSupportBudget() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $type_of_support_budget = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('type_of_support_id','budget_id','budget_amount');
+        $keys = array_keys($type_of_support_budget);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the type_of_support_budget received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $type_of_support_budget[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO type_of_support_budget(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($type_of_support_budget)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Type Of Support Budget Created Successfully.", "data" => $type_of_support_budget);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updateTypeOfSupportBudget() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $type_of_support_budget = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $type_of_support_budget['id'];
+        $column_names = array('type_of_support_id','budget_id','budget_amount');
+        $keys = array_keys($type_of_support_budget['type_of_support_budget']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the type_of_support_budget received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $type_of_support_budget['type_of_support_budget'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE type_of_support_budget SET " . trim($columns, ',') . " WHERE type_of_support_budget_id=$id";
+        if (!empty($type_of_support_budget)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Type Of Support Budget " . $id . " Updated Successfully.", "data" => $type_of_support_budget);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deleteTypeOfSupportBudget() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM type_of_support_budget WHERE type_of_support_budget_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
+    
     
     /*
      * 	Encode array into JSON

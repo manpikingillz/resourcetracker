@@ -531,6 +531,40 @@ app.factory("budgetService", ['$http', function($http) {
     }]);
 
 
+//TypeOfSupportBudget Service--------------------------------------------------------------
+app.factory("typeOfSupportBudgetService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
+
+        obj.getTypeOfSupportBudgets = function() {
+            return $http.get(serviceBase + 'typeOfSupportBudgets');
+        }
+
+        obj.getTypeOfSupportBudget = function(typeOfSupportBudgetID) {
+            return $http.get(serviceBase + 'typeOfSupportBudget?id=' + typeOfSupportBudgetID);
+        }
+
+        obj.insertTypeOfSupportBudget = function(typeOfSupportBudget) {
+            return $http.post(serviceBase + 'insertTypeOfSupportBudget', typeOfSupportBudget).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updateTypeOfSupportBudget = function(id, typeOfSupportBudget) {
+            return $http.post(serviceBase + 'updateTypeOfSupportBudget', {id: id, type_of_support_budget: typeOfSupportBudget}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deleteTypeOfSupportBudget = function(id) {
+            return $http.delete(serviceBase + 'deleteTypeOfSupportBudget?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
+
 ////////////////Controllers/////////////////////////////////////////////////////
 
 //Customer Controllers----------------------------------------------------------
@@ -877,7 +911,7 @@ app.controller('CostCategoryEditCtrl', function($scope, $rootScope, $location, $
     };
 
     $scope.saveCostCategory = function(costCategory) {
-        $location.path('/costCatetorys');
+        $location.path('/costCategorys');
         if (costCategoryID <= 0) {
             costCategoryService.insertCostCategory(costCategory);
         }
@@ -1171,6 +1205,57 @@ app.controller('BudgetEditCtrl', function($scope, $rootScope, $location, $routeP
         }
         else {
             budgetService.updateBudget(budgetID, budget);
+        }
+    };
+});
+
+
+//TypeOfSupportBudget Controllers----------------------------------------------------------
+app.controller('TypeOfSupportBudgetListCtrl', function($scope, typeOfSupportBudgetService) {
+    typeOfSupportBudgetService.getTypeOfSupportBudgets().then(function(data) {
+        $scope.typeOfSupportBudgets = data.data;
+    });
+});
+
+
+app.controller('TypeOfSupportBudgetEditCtrl', function($scope, $rootScope, $location, $routeParams, typeOfSupportBudgetService,typeOfSupportService, budgetService, typeOfSupportBudget) {
+    var typeOfSupportBudgetID = ($routeParams.typeOfSupportBudgetID) ? parseInt($routeParams.typeOfSupportBudgetID) : 0;
+    $rootScope.title = (typeOfSupportBudgetID > 0) ? 'Edit Type Of Support Budget' : 'Add Type Of Support Budget';
+    $scope.buttonText = (typeOfSupportBudgetID > 0) ? 'Update Type Of Support Budget' : 'Add New Type Of Support Budget';
+    var original = typeOfSupportBudget.data;
+    original._id = typeOfSupportBudgetID;
+    $scope.typeOfSupportBudget = angular.copy(original);
+    $scope.typeOfSupportBudget._id = typeOfSupportBudgetID;
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.typeOfSupportBudget);
+    }
+
+    //Type of support list
+    typeOfSupportService.getTypeOfSupports().then(function(data) {
+        $scope.typeOfSupports = data.data;
+    });
+    
+    //Budget List
+    budgetService.getBudgets().then(function(data) {
+        $scope.budgets = data.data;
+    });
+    
+
+    $scope.deleteTypeOfSupportBudget = function(typeOfSupportBudget) {
+        $location.path('/typeOfSupportBudgets');
+        if (confirm("Are you sure to delete Type Of Support Budget ID: " + $scope.typeOfSupportBudget._id) == true)
+            typeOfSupportBudgetService.deleteTypeOfSupportBudget(typeOfSupportBudget.type_of_support_budget_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.saveTypeOfSupportBudget = function(typeOfSupportBudget) {
+        $location.path('/typeOfSupportBudgets');
+        if (typeOfSupportBudgetID <= 0) {
+            typeOfSupportBudgetService.insertTypeOfSupportBudget(typeOfSupportBudget);
+        }
+        else {
+            typeOfSupportBudgetService.updateTypeOfSupportBudget(typeOfSupportBudgetID, typeOfSupportBudget);
         }
     };
 });
@@ -1474,6 +1559,24 @@ app.config(['$routeProvider',
                         budget: function(budgetService, $route) {
                             var budgetID = $route.current.params.budgetID;
                             return budgetService.getBudget(budgetID);
+                        }
+                    }
+                })
+                
+                ////////////////////Type Of Support Budget Routes///////////////////////////
+                .when('/typeOfSupportBudgets', {
+                    title: 'Type Of Support Budget',
+                    templateUrl: 'partials/typeOfSupportBudget/typeOfSupportBudget-list.html',
+                    controller: 'TypeOfSupportBudgetListCtrl'
+                })
+                .when('/edit-typeOfSupportBudget/:typeOfSupportBudgetID', {
+                    title: 'Edit Type Of Support Budget',
+                    templateUrl: 'partials/typeOfSupportBudget/edit-typeOfSupportBudget.html',
+                    controller: 'TypeOfSupportBudgetEditCtrl',
+                    resolve: {
+                        typeOfSupportBudget: function(typeOfSupportBudgetService, $route) {
+                            var typeOfSupportBudgetID = $route.current.params.typeOfSupportBudgetID;
+                            return typeOfSupportBudgetService.getTypeOfSupportBudget(typeOfSupportBudgetID);
                         }
                     }
                 })
