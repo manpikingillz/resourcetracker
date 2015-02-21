@@ -1005,7 +1005,7 @@ class API extends REST {
         if ($this->get_request_method() != "GET") {
             $this->response('', 406);
         }
-        $query = "SELECT distinct o.district_id, o.district_name FROM district o order by o.district_name desc";
+        $query = "SELECT distinct o.district_id, o.district_name, r.region_name FROM district o inner join region r on o.region_id = r.region_id  order by r.region_name desc";
         $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 
         if ($r->num_rows > 0) {
@@ -1068,7 +1068,7 @@ class API extends REST {
         }
         $district = json_decode(file_get_contents("php://input"), true);
         $id = (int) $district['id'];
-        $column_names = array('district_name');
+        $column_names = array('district_name','region_id');
         $keys = array_keys($district['district']);
         $columns = '';
         $values = '';
@@ -1127,7 +1127,7 @@ class API extends REST {
         }
         $id = (int) $this->_request['id'];
         if ($id > 0) {
-            $query = "SELECT distinct o.sub_category_of_support_id, o.sub_category_of_support_name FROM sub_category_of_support o where o.sub_category_of_support_id=$id";
+            $query = "SELECT distinct o.sub_category_of_support_id, o.sub_category_of_support_name, t.type_of_support_name as type_of_support_name FROM sub_category_of_support o inner join type_of_support t on o.type_of_support_id = t.type_of_support_id where o.sub_category_of_support_id=$id";
             $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
             if ($r->num_rows > 0) {
                 $result = $r->fetch_assoc();
@@ -1143,7 +1143,7 @@ class API extends REST {
         }
 
         $sub_category_of_support = json_decode(file_get_contents("php://input"), true);
-        $column_names = array('sub_category_of_support_name');
+        $column_names = array('sub_category_of_support_name','type_of_support_id');
         $keys = array_keys($sub_category_of_support);
         $columns = '';
         $values = '';
@@ -1171,7 +1171,7 @@ class API extends REST {
         }
         $sub_category_of_support = json_decode(file_get_contents("php://input"), true);
         $id = (int) $sub_category_of_support['id'];
-        $column_names = array('sub_category_of_support_name');
+        $column_names = array('sub_category_of_support_name','type_of_support_id');
         $keys = array_keys($sub_category_of_support['sub_category_of_support']);
         $columns = '';
         $values = '';
@@ -1205,7 +1205,423 @@ class API extends REST {
         } else
             $this->response('', 204); // If no records "No Content" status
     }
+    
+    
+    
+    //  Organisation Service----------------------------------------------
+    private function organisations() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT distinct r.organisation_id, r.organisation_name, ot.organisation_type_name, r.fiscal_year_start, r.provided_pools_fund_for_health, r.signed_mou_with_moh, r.date_started_working_in_districts, a.authority_name, r.contact_name, r.mobile_phone, r.office_phone, r.email FROM organisation r inner join organisation_type ot on r.organisation_type_id = ot.organisation_type_id inner join authority a on r.authority_consulted_Id = a.authority_id order by r.organisation_name desc";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function organisation() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT distinct r.organisation_id, r.organisation_name, ot.organisation_type_name, r.fiscal_year_start, r.provided_pools_fund_for_health, r.signed_mou_with_moh, r.date_started_working_in_districts, a.authority_name, r.contact_name, r.mobile_phone, r.office_phone, r.email FROM organisation r inner join organisation_type ot on r.organisation_type_id = ot.organisation_type_id inner join authority a on r.authority_consulted_Id = a.authority_id where r.organisation_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertOrganisation() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $organisation = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('organisation_name','organisation_type_id','fiscal_year_start','provided_pools_fund_for_health','signed_mou_with_moh','date_started_working_in_districts','authority_consulted_Id','contact_name','mobile_phone','office_phone','email');
+        $keys = array_keys($organisation);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the organisation received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $organisation[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO organisation(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($organisation)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Organisation Created Successfully.", "data" => $organisation);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updateOrganisation() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $organisation = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $organisation['id'];
+        $column_names = array('organisation_name','organisation_type_id','fiscal_year_start','provided_pools_fund_for_health','signed_mou_with_moh','date_started_working_in_districts','authority_consulted_Id','contact_name','mobile_phone','office_phone','email');
+        $keys = array_keys($organisation['organisation']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the organisation received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $organisation['organisation'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE organisation SET " . trim($columns, ',') . " WHERE organisation_id=$id";
+        if (!empty($organisation)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Organisation " . $id . " Updated Successfully.", "data" => $organisation);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deleteOrganisation() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM organisation WHERE organisation_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
+
+    
+    //  Project Service----------------------------------------------
+    private function projects() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT distinct r.project_id, r.project_name, r.project_description, fo.organisation_name as financing_agent, impo.organisation_name as implementer from project r inner join organisation fo on r.organisation_financing_agent_id = fo.organisation_id inner join organisation impo on r.organisation_implementer_id = impo.organisation_id;";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function project() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT distinct r.project_id, r.project_name, r.project_description, fo.organisation_name as financing_agent, impo.organisation_name as implementer from project r inner join organisation fo on r.organisation_financing_agent_id = fo.organisation_id inner join organisation impo on r.organisation_implementer_id = impo.organisation_id where r.project_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertProject() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $project = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('project_name','project_description','organisation_financing_agent_id','organisation_implementer_id');
+        $keys = array_keys($project);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the project received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $project[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO project(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($project)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Project Created Successfully.", "data" => $project);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updateProject() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $project = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $project['id'];
+        $column_names = array('project_name','project_description','organisation_financing_agent_id','organisation_implementer_id');
+        $keys = array_keys($project['project']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the project received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $project['project'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE project SET " . trim($columns, ',') . " WHERE project_id=$id";
+        if (!empty($project)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Project " . $id . " Updated Successfully.", "data" => $project);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deleteProject() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM project WHERE project_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
+
+    
+        //  Partner Service----------------------------------------------
+    private function partners() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT distinct p.partner_id, pt.partner_type_name, p.partner_name, p.partner_contact_name, p.partner_contact_phone, p.partner_contact_email from partner p inner join partner_type pt on p.partner_type_id = pt.partner_type_id;";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function partner() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT distinct p.partner_id, pt.partner_type_name, p.partner_name, p.partner_contact_name, p.partner_contact_phone, p.partner_contact_email from partner p inner join partner_type pt on p.partner_type_id = pt.partner_type_id where p.partner_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertPartner() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $partner = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('partner_type_id','partner_name','partner_contact_name','partner_contact_phone','partner_contact_email');
+        $keys = array_keys($partner);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the partner received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $partner[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO partner(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($partner)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Partner Created Successfully.", "data" => $partner);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updatePartner() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $partner = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $partner['id'];
+        $column_names = array('partner_type_id','partner_name','partner_contact_name','partner_contact_phone','partner_contact_email');
+        $keys = array_keys($partner['partner']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the partner received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $partner['partner'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE partner SET " . trim($columns, ',') . " WHERE partner_id=$id";
+        if (!empty($partner)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Partner " . $id . " Updated Successfully.", "data" => $partner);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deletePartner() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM partner WHERE partner_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
+    
+    //  Budget Service----------------------------------------------
+    private function budgets() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $query = "SELECT b.budget_id, fc.currency_name as financing_currency, sc.currency_name as spending_currency, f.financial_year_name, b.total_budget, p.project_name FROM budget b inner join currency fc on b.financing_currency_id = fc.currency_id inner join currency sc on b.spending_currency_id = sc.currency_id inner join financial_year f on b.financial_year_id = f.financial_year_id inner join project p on b.project_id = p.project_id;";
+        $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+
+        if ($r->num_rows > 0) {
+            $result = array();
+            while ($row = $r->fetch_assoc()) {
+                $result[] = $row;
+            }
+            $this->response($this->json($result), 200); // send user details
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function budget() {
+        if ($this->get_request_method() != "GET") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "SELECT b.budget_id, fc.currency_name as financing_currency, sc.currency_name as spending_currency, f.financial_year_name, b.total_budget, p.project_name FROM budget b inner join currency fc on b.financing_currency_id = fc.currency_id inner join currency sc on b.spending_currency_id = sc.currency_id inner join financial_year f on b.financial_year_id = f.financial_year_id inner join project p on b.project_id = p.project_id where p.budget_id=$id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            if ($r->num_rows > 0) {
+                $result = $r->fetch_assoc();
+                $this->response($this->json($result), 200); // send user details
+            }
+        }
+        $this->response('', 204); // If no records "No Content" status
+    }
+
+    private function insertBudget() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+
+        $budget = json_decode(file_get_contents("php://input"), true);
+        $column_names = array('financing_currency_id','spending_currency_id','financial_year_id','total_budget','project_id');
+        $keys = array_keys($budget);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the budget received. If blank insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $budget[$desired_key];
+            }
+            $columns = $columns . $desired_key . ',';
+            $values = $values . "'" . $$desired_key . "',";
+        }
+        $query = "INSERT INTO budget(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+        if (!empty($budget)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Budget Created Successfully.", "data" => $budget);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); //"No Content" status
+    }
+
+    private function updateBudget() {
+        if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
+        $budget = json_decode(file_get_contents("php://input"), true);
+        $id = (int) $budget['id'];
+        $column_names = array('financing_currency_id','spending_currency_id','financial_year_id','total_budget','project_id');
+        $keys = array_keys($budget['budget']);
+        $columns = '';
+        $values = '';
+        foreach ($column_names as $desired_key) { // Check the budget received. If key does not exist, insert blank into the array.
+            if (!in_array($desired_key, $keys)) {
+                $$desired_key = '';
+            } else {
+                $$desired_key = $budget['budget'][$desired_key];
+            }
+            $columns = $columns . $desired_key . "='" . $$desired_key . "',";
+        }
+        $query = "UPDATE budget SET " . trim($columns, ',') . " WHERE budget_id=$id";
+        if (!empty($budget)) {
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Budget " . $id . " Updated Successfully.", "data" => $budget);
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // "No Content" status
+    }
+
+    private function deleteBudget() {
+        if ($this->get_request_method() != "DELETE") {
+            $this->response('', 406);
+        }
+        $id = (int) $this->_request['id'];
+        if ($id > 0) {
+            $query = "DELETE FROM budget WHERE budget_id = $id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
+            $success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+            $this->response($this->json($success), 200);
+        } else
+            $this->response('', 204); // If no records "No Content" status
+    }
+    
     /*
      * 	Encode array into JSON
      */

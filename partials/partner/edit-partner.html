@@ -1,0 +1,87 @@
+﻿<style type="text/css">
+    .form-horizontal input.ng-invalid.ng-dirty {
+        border-color: #FA787E;
+    }
+
+    .form-horizontal input.ng-valid.ng-dirty {
+        border-color: #78FA89;
+    }
+</style>
+<!--<div class="view">-->
+<!--<div class="container">-->
+
+
+<nav class= "navbar navbar-default" role= "navigation" >
+    <div class= "navbar-header" >
+        <a class= "navbar-brand" href= "#/partners"><i class="glyphicon glyphicon-th-large"></i> Partner List </a>
+        <a ng-show="partner._id" class= "navbar-brand" href= "#/edit-partner/0"><i class="glyphicon glyphicon-plus"></i> Create Partner </a>
+        <!--<a ng-show="customer._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Customer No: {{customer._id}}</a>-->
+    </div>
+</nav>
+<header>
+    <h3 class="btn-primary">{{title}}</h3>
+</header>
+<!--<div class="row">-->
+
+<!--<div>-->
+<div class="col-md-12">
+    <form role="form" name="myForm" class="form-horizontal">
+        <div class="row">
+
+            <div class= "form-group">
+                <label class= "col-md-2">Partner Name</label>
+                <div class= "col-md-4">
+                    <input ng-model="partner.partner_name" type= "text" class= "form-control" placeholder= "Partner Name"/>
+                </div>
+            </div>
+            
+           <div class="form-group">
+                <label class="col-sm-2 " >Partner Type<span class="required">*</span></label>
+                <div class="col-sm-4">
+                    <select  class="form-control dropdown" id="requiredAction" ng-model="partner.partner_type_id" 
+                             ng-required="true" ng-options="partnerType.partner_type_name for partnerType in partnerTypes track by partnerType._id"
+                             >
+                        <option value="">Please Select</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class= "form-group">
+                <label class= "col-md-2">Contact Name</label>
+                <div class= "col-md-4">
+                    <input ng-model="partner.partner_contact_name" type= "text" class= "form-control" placeholder= "Enter Contact Name"/>
+                </div>
+            </div>
+            
+            <div class= "form-group">
+                <label class= "col-md-2">Contact Phone</label>
+                <div class= "col-md-4">
+                    <input ng-model="partner.partner_contact_phone" type= "text" class= "form-control" placeholder= "Enter Contact Phone"/>
+                </div>
+            </div>
+            
+            <div class= "form-group">
+                <label class= "col-md-2">Contact Email</label>
+                <div class= "col-md-4">
+                    <input ng-model="partner.partner_contact_email" type= "text" class= "form-control" placeholder= "Enter Contact Email"/>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-2"></label>
+                <div class="col-md-4">
+                    <a href="#/partners" class="btn">Cancel</a>
+                    <button ng-click="savePartner(partner);" 
+                            ng-disabled="isClean() || myForm.$invalid"
+                            class="btn btn-primary">{{buttonText}}</button>
+                    <button ng-click="deletePartner(partner)"
+                            ng-show="partner._id" class="btn btn-warning">Delete</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->

@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-md-12" ng-show="partners.length > 0">
+
+        <nav class= "navbar navbar-default" role= "navigation" >
+            <div class= "navbar-header" >
+                <a class="btn btn-lg btn-success" href="#/edit-partner/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add new Partner</a>
+            </div>
+        </nav>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <th>Partner Name&nbsp;</th>
+                <th>Contact name&nbsp;</th>
+                <th>Contact phone&nbsp;</th>
+                <th>Contact email&nbsp;</th>
+                <th>Partner Type&nbsp;</th>
+                <th>Action&nbsp;</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="data in partners">
+                    <td>{{data.partner_name}}</td>
+                    <td>{{data.partner_contact_name}}</td>
+                    <td>{{data.partner_contact_phone}}</td>
+                    <td>{{data.partner_contact_email}}</td>
+                    <td>{{data.partner_type_name}}</td>
+                    <td style="width: 100px"><a href="#/edit-partner/{{data.partner_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp; Edit Partner</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12" ng-show="partners.length == 0">
+        <div class="col-md-12">
+            <h4>No Partners found</h4>
+        </div>
+    </div>
+</div>

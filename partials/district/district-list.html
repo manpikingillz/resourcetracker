@@ -9,10 +9,13 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <th>District Name&nbsp;</th>
+                <th>Region&nbsp;</th>
+                <th>Action&nbsp;</th>
             </thead>
             <tbody>
                 <tr ng-repeat="data in districts">
                     <td>{{data.district_name}}</td>
+                    <td>{{data.region_name}}</td>
                     <td style="width: 100px"><a href="#/edit-district/{{data.district_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp; Edit District</a></td>
                     <!--                <td>
                                         <div class="btn-group">

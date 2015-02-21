@@ -1,0 +1,34 @@
+<div class="row">
+    <!--<div class="alert alert-success " ng-show="">Success! Well done its submitted.</div>-->
+    <div class="col-md-12" ng-show="projects.length > 0">
+
+        <nav class= "navbar navbar-default" role= "navigation" >
+            <div class= "navbar-header" >
+                <a class="btn btn-lg btn-success" href="#/edit-project/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add new Project</a>
+            </div>
+        </nav>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <th>Project Name&nbsp;</th>
+                <th>Project Description&nbsp;</th>
+                <th>Financing Agent&nbsp;</th>
+                <th>Implementer&nbsp;</th>
+                <th>Action&nbsp;</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="data in projects">
+                    <td>{{data.project_name}}</td>
+                    <td>{{data.project_description}}</td>
+                    <td>{{data.financing_agent}}</td>
+                    <td>{{data.implementer}}</td>
+                    <td style="width: 100px"><a href="#/edit-project/{{data.project_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp; Edit Project</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12" ng-show="projects.length == 0">
+        <div class="col-md-12">
+            <h4>No Projects found</h4>
+        </div>
+    </div>
+</div>

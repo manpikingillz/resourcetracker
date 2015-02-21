@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-md-12" ng-show="organisations.length > 0">
+
+        <nav class= "navbar navbar-default" role= "navigation" >
+            <div class= "navbar-header" >
+                <a class="btn btn-lg btn-success" href="#/edit-organisation/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add new Organisation</a>
+            </div>
+        </nav>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <th>Organisation Name&nbsp;</th>
+                <th>Organisation Type Name&nbsp;</th>
+                <th>Fiscal Year Start&nbsp;</th>
+                <th>Pools fund for health&nbsp;</th>
+                <th>Signed MOU&nbsp;</th>
+                <th>Started Work in districts&nbsp;</th>
+                <th>Authority Name&nbsp;</th>
+                <th>Contact name&nbsp;</th>
+                <th>Mobile phone&nbsp;</th>
+                <th>Office phone&nbsp;</th>
+                <th>Action&nbsp;</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="data in organisations">
+                    <td>{{data.organisation_name}}</td>
+                    <td>{{data.organisation_type_name}}</td>
+                    <td>{{data.fiscal_year_start}}</td>
+                    <td>{{data.provided_pools_fund_for_health==0?'No':'Yes'}}</td>
+                    <td>{{data.signed_mou_with_moh==0?'No':'Yes'}}</td>
+                    <td>{{data.date_started_working_in_districts}}</td>
+                    <td>{{data.authority_name}}</td>
+                    <td>{{data.contact_name}}</td>
+                    <td>{{data.mobile_phone}}</td>
+                    <td>{{data.office_phone}}</td>
+                    <td style="width: 100px"><a href="#/edit-organisation/{{data.organisation_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp; Edit Organisation</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12" ng-show="organisations.length == 0">
+        <div class="col-md-12">
+            <h4>No Organisations found</h4>
+        </div>
+    </div>
+</div>

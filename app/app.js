@@ -1,13 +1,12 @@
-    
-// init jquery functions and plugins
-$(document).ready(function(){
-  $.getScript('//cdnjs.cloudflare.com/ajax/libs/select2/3.4.8/select2.min.js',function(){
 
-    $("#mySel").select2({
-        
-    });
-  });//script
-  
+// init jquery functions and plugins
+$(document).ready(function() {
+    $.getScript('//cdnjs.cloudflare.com/ajax/libs/select2/3.4.8/select2.min.js', function() {
+
+        $("#mySel").select2({
+        });
+    });//script
+
 });
 
 
@@ -394,6 +393,143 @@ app.factory("subCategoryOfSupportService", ['$http', function($http) {
         return obj;
     }]);
 
+//Organisation Service--------------------------------------------------------------
+app.factory("organisationService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
+
+        obj.getOrganisations = function() {
+            return $http.get(serviceBase + 'organisations');
+        }
+
+        obj.getOrganisation = function(organisationID) {
+            return $http.get(serviceBase + 'organisation?id=' + organisationID);
+        }
+
+        obj.insertOrganisation = function(organisation) {
+            return $http.post(serviceBase + 'insertOrganisation', organisation).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updateOrganisation = function(id, organisation) {
+            return $http.post(serviceBase + 'updateOrganisation', {id: id, organisation: organisation}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deleteOrganisation = function(id) {
+            return $http.delete(serviceBase + 'deleteOrganisation?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
+
+
+//Project Service--------------------------------------------------------------
+app.factory("projectService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
+
+        obj.getProjects = function() {
+            return $http.get(serviceBase + 'projects');
+        }
+
+        obj.getProject = function(projectID) {
+            return $http.get(serviceBase + 'project?id=' + projectID);
+        }
+
+        obj.insertProject = function(project) {
+            return $http.post(serviceBase + 'insertProject', project).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updateProject = function(id, project) {
+            return $http.post(serviceBase + 'updateProject', {id: id, project: project}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deleteProject = function(id) {
+            return $http.delete(serviceBase + 'deleteProject?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
+
+    //Partner Service--------------------------------------------------------------
+app.factory("partnerService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
+
+        obj.getPartners = function() {
+            return $http.get(serviceBase + 'partners');
+        }
+
+        obj.getPartner = function(partnerID) {
+            return $http.get(serviceBase + 'partner?id=' + partnerID);
+        }
+
+        obj.insertPartner = function(partner) {
+            return $http.post(serviceBase + 'insertPartner', partner).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updatePartner = function(id, partner) {
+            return $http.post(serviceBase + 'updatePartner', {id: id, partner: partner}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deletePartner = function(id) {
+            return $http.delete(serviceBase + 'deletePartner?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
+
+    //Budget Service--------------------------------------------------------------
+app.factory("budgetService", ['$http', function($http) {
+        var serviceBase = 'php-backend/services/';
+        var obj = {};
+
+        obj.getBudgets = function() {
+            return $http.get(serviceBase + 'budgets');
+        }
+
+        obj.getBudget = function(budgetID) {
+            return $http.get(serviceBase + 'budget?id=' + budgetID);
+        }
+
+        obj.insertBudget = function(budget) {
+            return $http.post(serviceBase + 'insertBudget', budget).then(function(results) {
+                return results;
+            });
+        };
+
+        obj.updateBudget = function(id, budget) {
+            return $http.post(serviceBase + 'updateBudget', {id: id, budget: budget}).then(function(status) {
+                return status.data;
+            });
+        };
+
+        obj.deleteBudget = function(id) {
+            return $http.delete(serviceBase + 'deleteBudget?id=' + id).then(function(status) {
+                return status.data;
+            });
+        };
+
+        return obj;
+    }]);
+
 
 ////////////////Controllers/////////////////////////////////////////////////////
 
@@ -419,13 +555,13 @@ app.controller('editCtrl', function($scope, $rootScope, $location, $routeParams,
     }
 
     $scope.deleteCustomer = function(customer) {
-        $location.path('/');
+        $location.path('/customers');
         if (confirm("Are you sure to delete customer number: " + $scope.customer._id) == true)
             customerService.deleteCustomer(customer.customerNumber);
     };
 
     $scope.saveCustomer = function(customer) {
-        $location.path('/');
+        $location.path('/customers');
         if (customerID <= 0) {
             customerService.insertCustomer(customer);
         }
@@ -457,14 +593,14 @@ app.controller('CurrencyEditCtrl', function($scope, $rootScope, $location, $rout
     }
 
     $scope.deleteCurrency = function(currency) {
-        $location.path('/');
+        $location.path('/currencies');
         if (confirm("Are you sure to delete currency ID: " + $scope.currency._id) == true)
             currencyService.deleteCurrency(currency.currency_id);
         ///////////Navigate back to the list
     };
 
     $scope.saveCurrency = function(currency) {
-        $location.path('/');
+        $location.path('/currencies');
         if (currencyID <= 0) {
             currencyService.insertCurrency(currency);
         }
@@ -479,7 +615,7 @@ app.controller('RegionListCtrl', function($scope, regionService) {
     regionService.getRegions().then(function(data) {
         $scope.regions = data.data;
     });
-    
+
 });
 
 
@@ -497,14 +633,14 @@ app.controller('RegionEditCtrl', function($scope, $rootScope, $location, $routeP
     }
 
     $scope.deleteRegion = function(region) {
-        $location.path('/');
+        $location.path('/regions');
         if (confirm("Are you sure to delete region ID: " + $scope.region._id) == true)
             regionService.deleteRegion(region.region_id);
         ///////////Navigate back to the list
     };
 
     $scope.saveRegion = function(region) {
-        $location.path('/');
+        $location.path('/regions');
         if (regionID <= 0) {
             regionService.insertRegion(region);
         }
@@ -537,14 +673,14 @@ app.controller('FinancialYearEditCtrl', function($scope, $rootScope, $location, 
     }
 
     $scope.deleteFinancialYear = function(financialYear) {
-        $location.path('/');
+        $location.path('/financialYears');
         if (confirm("Are you sure to delete Financial Year ID: " + $scope.financialYear._id) == true)
             financialYearService.deleteFinancialYear(financialYear.financial_year_id);
         ///////////Navigate back to the list
     };
 
     $scope.saveFinancialYear = function(financialYear) {
-        $location.path('/');
+        $location.path('/financialYears');
         if (financialYearID <= 0) {
             financialYearService.insertFinancialYear(financialYear);
         }
@@ -577,14 +713,14 @@ app.controller('OrganisationTypeEditCtrl', function($scope, $rootScope, $locatio
     }
 
     $scope.deleteOrganisationType = function(organisationType) {
-        $location.path('/');
+        $location.path('/organisationTypes');
         if (confirm("Are you sure to delete Organisation Type ID: " + $scope.organisationType._id) == true)
             organisationTypeService.deleteOrganisationType(organisationType.organisation_type_id);
         ///////////Navigate back to the list
     };
 
     $scope.saveOrganisationType = function(organisationType) {
-        $location.path('/');
+        $location.path('/organisationTypes');
         if (organisationTypeID <= 0) {
             organisationTypeService.insertOrganisationType(organisationType);
         }
@@ -616,14 +752,14 @@ app.controller('TypeOfSupportEditCtrl', function($scope, $rootScope, $location, 
     }
 
     $scope.deleteTypeOfSupport = function(typeOfSupport) {
-        $location.path('/');
+        $location.path('/typeOfSupports');
         if (confirm("Are you sure to delete Type Of Support ID: " + $scope.typeOfSupport._id) == true)
             typeOfSupportService.deleteTypeOfSupport(typeOfSupport.type_of_support_id);
         ///////////Navigate back to the list
     };
 
     $scope.saveTypeOfSupport = function(typeOfSupport) {
-        $location.path('/');
+        $location.path('/typeOfSupports');
         if (typeOfSupportID <= 0) {
             typeOfSupportService.insertTypeOfSupport(typeOfSupport);
         }
@@ -655,14 +791,14 @@ app.controller('PartnerTypeEditCtrl', function($scope, $rootScope, $location, $r
     }
 
     $scope.deletePartnerType = function(partnerType) {
-        $location.path('/');
+        $location.path('/partnerTypes');
         if (confirm("Are you sure to delete Partner Type ID: " + $scope.partnerType._id) == true)
             partnerTypeService.deletePartnerType(partnerType.partner_type_id);
         ///////////Navigate back to the list
     };
 
     $scope.savePartnerType = function(partnerType) {
-        $location.path('/');
+        $location.path('/partnerTypes');
         if (partnerTypeID <= 0) {
             partnerTypeService.insertPartnerType(partnerType);
         }
@@ -694,14 +830,15 @@ app.controller('AuthorityEditCtrl', function($scope, $rootScope, $location, $rou
     }
 
     $scope.deleteAuthority = function(authority) {
-        $location.path('/');
+        $location.path('/authoritys');
         if (confirm("Are you sure to delete Authority ID: " + $scope.authority._id) == true)
             authorityService.deleteAuthority(authority.authority_id);
         ///////////Navigate back to the list
+         
     };
 
     $scope.saveAuthority = function(authority) {
-        $location.path('/');
+        $location.path('/authoritys');
         if (authorityID <= 0) {
             authorityService.insertAuthority(authority);
         }
@@ -733,14 +870,14 @@ app.controller('CostCategoryEditCtrl', function($scope, $rootScope, $location, $
     }
 
     $scope.deleteCostCategory = function(costCategory) {
-        $location.path('/');
+        $location.path('/costCategorys');
         if (confirm("Are you sure to delete Cost Category ID: " + $scope.costCategory._id) == true)
             costCategoryService.deleteCostCategory(costCategory.cost_category_id);
         ///////////Navigate back to the list
     };
 
     $scope.saveCostCategory = function(costCategory) {
-        $location.path('/');
+        $location.path('/costCatetorys');
         if (costCategoryID <= 0) {
             costCategoryService.insertCostCategory(costCategory);
         }
@@ -767,9 +904,9 @@ app.controller('DistrictEditCtrl', function($scope, $rootScope, $location, $rout
     original._id = districtID;
     $scope.district = angular.copy(original);
     $scope.district._id = districtID;
-   
-   ////////////regions//////////
-     regionService.getRegions().then(function(data) {
+
+    ////////////regions//////////
+    regionService.getRegions().then(function(data) {
         $scope.regions = data.data;
     });
 
@@ -778,14 +915,14 @@ app.controller('DistrictEditCtrl', function($scope, $rootScope, $location, $rout
     }
 
     $scope.deleteDistrict = function(district) {
-        $location.path('/');
+        $location.path('/districts');
         if (confirm("Are you sure to delete District ID: " + $scope.district._id) == true)
-                districtService.deleteDistrict(district.district_id);
+            districtService.deleteDistrict(district.district_id);
         ///////////Navigate back to the list
     };
 
     $scope.saveDistrict = function(district) {
-        $location.path('/');
+        $location.path('/districts');
         if (districtID <= 0) {
             districtService.insertDistrict(district);
         }
@@ -817,21 +954,21 @@ app.controller('SubCategoryOfSupportEditCtrl', function($scope, $rootScope, $loc
     $scope.isClean = function() {
         return angular.equals(original, $scope.subCategoryOfSupport);
     }
-    
+
     //type of support
     typeOfSupportService.getTypeOfSupports().then(function(data) {
         $scope.typeOfSupports = data.data;
     });
 
     $scope.deleteSubCategoryOfSupport = function(subCategoryOfSupport) {
-        $location.path('/');
+        $location.path('/subCategoryOfSupports');
         if (confirm("Are you sure to delete SubCategory Of Support ID: " + $scope.subCategoryOfSupport._id) == true)
             subCategoryOfSupportService.deleteSubCategoryOfSupport(subCategoryOfSupport.sub_category_of_support_id);
         ///////////Navigate back to the list
     };
 
     $scope.saveSubCategoryOfSupport = function(subCategoryOfSupport) {
-        $location.path('/');
+        $location.path('/subCategoryOfSupports');
         if (subCategoryOfSupportID <= 0) {
             subCategoryOfSupportService.insertSubCategoryOfSupport(subCategoryOfSupport);
         }
@@ -841,6 +978,202 @@ app.controller('SubCategoryOfSupportEditCtrl', function($scope, $rootScope, $loc
     };
 });
 
+//Organisation Controllers----------------------------------------------------------
+app.controller('OrganisationListCtrl', function($scope, organisationService) {
+    organisationService.getOrganisations().then(function(data) {
+        $scope.organisations = data.data;
+    });
+
+});
+
+
+app.controller('OrganisationEditCtrl', function($scope, $rootScope, $location, $routeParams, organisationService, organisationTypeService, authorityService, organisation) {
+    var organisationID = ($routeParams.organisationID) ? parseInt($routeParams.organisationID) : 0;
+    $rootScope.title = (organisationID > 0) ? 'Edit Organisation' : 'Add Organisation';
+    $scope.buttonText = (organisationID > 0) ? 'Update Organisation' : 'Add New Organisation';
+    var original = organisation.data;
+    original._id = organisationID;
+    $scope.organisation = angular.copy(original);
+    $scope.organisation._id = organisationID;
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.organisation);
+    }
+
+    //Organisation Types
+    organisationTypeService.getOrganisationTypes().then(function(data) {
+        $scope.organisationTypes = data.data;
+    });
+
+    //Authorities
+    authorityService.getAuthoritys().then(function(data) {
+        $scope.authoritys = data.data;
+    });
+
+    $scope.deleteOrganisation = function(organisation) {
+        $location.path('/organisations');
+        if (confirm("Are you sure to delete organisation ID: " + $scope.organisation._id) == true)
+            organisationService.deleteOrganisation(organisation.organisation_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.saveOrganisation = function(organisation) {
+        $location.path('/organisations');
+        if (organisationID <= 0) {
+            organisationService.insertOrganisation(organisation);
+        }
+        else {
+            organisationService.updateOrganisation(organisationID, organisation);
+        }
+    };
+});
+
+
+//Project Controllers----------------------------------------------------------
+app.controller('ProjectListCtrl', function($scope, projectService) {
+    projectService.getProjects().then(function(data) {
+        $scope.projects = data.data;
+    });
+
+});
+
+
+app.controller('ProjectEditCtrl', function($scope, $rootScope, $location, $routeParams, projectService, organisationService, project) {
+    var projectID = ($routeParams.projectID) ? parseInt($routeParams.projectID) : 0;
+    $rootScope.title = (projectID > 0) ? 'Edit Project' : 'Add Project';
+    $scope.buttonText = (projectID > 0) ? 'Update Project' : 'Add New Project';
+    var original = project.data;
+    original._id = projectID;
+    $scope.project = angular.copy(original);
+    $scope.project._id = projectID;
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.project);
+    }
+    
+    //Organisations list
+        organisationService.getOrganisations().then(function(data) {
+        $scope.organisations = data.data;
+    });
+    
+
+    $scope.deleteProject = function(project) {
+        $location.path('/projects');
+        if (confirm("Are you sure to delete project ID: " + $scope.project._id) == true)
+            projectService.deleteProject(project.project_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.saveProject = function(project) {
+        $location.path('/projects');
+        if (projectID <= 0) {
+            projectService.insertProject(project);
+        }
+        else {
+            projectService.updateProject(projectID, project);
+        }
+    };
+});
+
+//Partner Controllers----------------------------------------------------------
+app.controller('PartnerListCtrl', function($scope, partnerService) {
+    partnerService.getPartners().then(function(data) {
+        $scope.partners = data.data;
+    });
+
+});
+
+app.controller('PartnerEditCtrl', function($scope, $rootScope, $location, $routeParams, partnerService, partnerTypeService, partner) {
+    var partnerID = ($routeParams.partnerID) ? parseInt($routeParams.partnerID) : 0;
+    $rootScope.title = (partnerID > 0) ? 'Edit Partner' : 'Add Partner';
+    $scope.buttonText = (partnerID > 0) ? 'Update Partner' : 'Add New Partner';
+    var original = partner.data;
+    original._id = partnerID;
+    $scope.partner = angular.copy(original);
+    $scope.partner._id = partnerID;
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.partner);
+    }
+    
+    //Partner Types list
+        partnerTypeService.getPartnerTypes().then(function(data) {
+        $scope.partnerTypes = data.data;
+    });
+    
+
+    $scope.deletePartner = function(partner) {
+        $location.path('/partners');
+        if (confirm("Are you sure to delete partner ID: " + $scope.partner._id) == true)
+            partnerService.deletePartner(partner.partner_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.savePartner = function(partner) {
+        $location.path('/partners');
+        if (partnerID <= 0) {
+            partnerService.insertPartner(partner);
+        }
+        else {
+            partnerService.updatePartner(partnerID, partner);
+        }
+    };
+});
+
+
+//Budget Controllers----------------------------------------------------------
+app.controller('BudgetListCtrl', function($scope, budgetService) {
+    budgetService.getBudgets().then(function(data) {
+        $scope.budgets = data.data;
+    });
+
+});
+
+app.controller('BudgetEditCtrl', function($scope, $rootScope, $location, $routeParams, budgetService, currencyService, financialYearService, projectService, budget) {
+    var budgetID = ($routeParams.budgetID) ? parseInt($routeParams.budgetID) : 0;
+    $rootScope.title = (budgetID > 0) ? 'Edit Budget' : 'Add Budget';
+    $scope.buttonText = (budgetID > 0) ? 'Update Budget' : 'Add New Budget';
+    var original = budget.data;
+    original._id = budgetID;
+    $scope.budget = angular.copy(original);
+    $scope.budget._id = budgetID;
+
+    $scope.isClean = function() {
+        return angular.equals(original, $scope.budget);
+    }
+    
+    //Currency list
+        currencyService.getCurrencies().then(function(data) {
+        $scope.currencies = data.data;
+    });
+    
+    //Financial Year List
+    financialYearService.getFinancialYears().then(function(data) {
+        $scope.financialYears = data.data;
+    });
+    
+    //Project List
+    projectService.getProjects().then(function(data) {
+        $scope.projects = data.data;
+    });
+
+    $scope.deleteBudget = function(budget) {
+        $location.path('/budgets');
+        if (confirm("Are you sure to delete budget ID: " + $scope.budget._id) == true)
+            budgetService.deleteBudget(budget.budget_id);
+        ///////////Navigate back to the list
+    };
+
+    $scope.saveBudget = function(budget) {
+        $location.path('/budgets');
+        if (budgetID <= 0) {
+            budgetService.insertBudget(budget);
+        }
+        else {
+            budgetService.updateBudget(budgetID, budget);
+        }
+    };
+});
 
 //////////////////////////////Routes////////////////////////////////////////////
 
@@ -1000,7 +1333,7 @@ app.config(['$routeProvider',
                         }
                     }
                 })
-                
+
                 ////////////////////Authority Routes///////////////////////////
                 .when('/authoritys', {
                     title: 'Authority',
@@ -1018,7 +1351,7 @@ app.config(['$routeProvider',
                         }
                     }
                 })
-                
+
                 ////////////////////Cost Category Routes///////////////////////////
                 .when('/costCategorys', {
                     title: 'Cost Category',
@@ -1036,7 +1369,7 @@ app.config(['$routeProvider',
                         }
                     }
                 })
-                
+
                 .when('/districts', {
                     title: 'District',
                     templateUrl: 'partials/district/district-list.html',
@@ -1053,7 +1386,7 @@ app.config(['$routeProvider',
                         }
                     }
                 })
-                
+
                 ////////////////////SubCategory Of Support Routes///////////////////////////
                 .when('/subCategoryOfSupports', {
                     title: 'SubCategory Of Support',
@@ -1071,7 +1404,80 @@ app.config(['$routeProvider',
                         }
                     }
                 })
+
+                ////////////////////Organisation Routes///////////////////////////
+                .when('/organisations', {
+                    title: 'Organisations',
+                    templateUrl: 'partials/organisation/organisation-list.html',
+                    controller: 'OrganisationListCtrl'
+                })
+                .when('/edit-organisation/:organisationID', {
+                    title: 'Edit Organisations',
+                    templateUrl: 'partials/organisation/edit-organisation.html',
+                    controller: 'OrganisationEditCtrl',
+                    resolve: {
+                        organisation: function(organisationService, $route) {
+                            var organisationID = $route.current.params.organisationID;
+                            return organisationService.getOrganisation(organisationID);
+                        }
+                    }
+                })
+
+
+                ////////////////////Project Routes///////////////////////////
+                .when('/projects', {
+                    title: 'Projects',
+                    templateUrl: 'partials/project/project-list.html',
+                    controller: 'ProjectListCtrl'
+                })
+                .when('/edit-project/:projectID', {
+                    title: 'Edit Projects',
+                    templateUrl: 'partials/project/edit-project.html',
+                    controller: 'ProjectEditCtrl',
+                    resolve: {
+                        project: function(projectService, $route) {
+                            var projectID = $route.current.params.projectID;
+                            return projectService.getProject(projectID);
+                        }
+                    }
+                })
                 
+                 ////////////////////Partner Routes///////////////////////////
+                .when('/partners', {
+                    title: 'Partners',
+                    templateUrl: 'partials/partner/partner-list.html',
+                    controller: 'PartnerListCtrl'
+                })
+                .when('/edit-partner/:partnerID', {
+                    title: 'Edit Partners',
+                    templateUrl: 'partials/partner/edit-partner.html',
+                    controller: 'PartnerEditCtrl',
+                    resolve: {
+                        partner: function(partnerService, $route) {
+                            var partnerID = $route.current.params.partnerID;
+                            return partnerService.getPartner(partnerID);
+                        }
+                    }
+                })
+                
+                 ////////////////////Budget Routes///////////////////////////
+                .when('/budgets', {
+                    title: 'Budgets',
+                    templateUrl: 'partials/budget/budget-list.html',
+                    controller: 'BudgetListCtrl'
+                })
+                .when('/edit-budget/:budgetID', {
+                    title: 'Edit Budgets',
+                    templateUrl: 'partials/budget/edit-budget.html',
+                    controller: 'BudgetEditCtrl',
+                    resolve: {
+                        budget: function(budgetService, $route) {
+                            var budgetID = $route.current.params.budgetID;
+                            return budgetService.getBudget(budgetID);
+                        }
+                    }
+                })
+
                 .otherwise({
                     redirectTo: '/login'
                 });

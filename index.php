@@ -49,11 +49,22 @@
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
                             <!--<li class="active"><a href="#/customers">Customers</a></li>-->
-                            <li><a href="#">Projects</a></li>
+                            <li><a href="#/projects">Projects</a></li>
                             <!--<li><a href="#/customers">Customers</a></li>-->
-                            <li><a href="#">Budget</a></li>
-                            <li><a href="#">Organisationns</a></li>
-                            <li><a href="#">Partners</a></li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown">Budget<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#/budgets">Project budget</a></li>
+                                    <li><a href="#">Type of support budget</a></li>
+                                    <li><a href="#">Subcategory of support budget</a></li>
+                                    <li><a href="#">National budget</a></li>
+                                    <li><a href="#">National budget cost category</a></li>
+                                    <li><a href="#">District partner budget</a></li>
+                                    <li><a href="#">District partner cost category</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#/organisations">Organisationns</a></li>
+                            <li><a href="#/partners">Partners</a></li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown">Setup<b class="caret"></b></a>
                                 <ul class="dropdown-menu">

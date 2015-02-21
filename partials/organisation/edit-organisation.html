@@ -1,0 +1,147 @@
+﻿<style type="text/css">
+    .form-horizontal input.ng-invalid.ng-dirty {
+        border-color: #FA787E;
+    }
+
+    .form-horizontal input.ng-valid.ng-dirty {
+        border-color: #78FA89;
+    }
+</style>
+<!--<div class="view">-->
+<!--<div class="container">-->
+
+
+<nav class= "navbar navbar-default" role= "navigation" >
+    <div class= "navbar-header" >
+        <a class= "navbar-brand" href= "#/organisations"><i class="glyphicon glyphicon-th-large"></i> Organisation List </a>
+        <a ng-show="organisation._id" class= "navbar-brand" href= "#/edit-organisation/0"><i class="glyphicon glyphicon-plus"></i> Create Organisation </a>
+        <!--<a ng-show="customer._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Customer No: {{customer._id}}</a>-->
+    </div>
+</nav>
+<header>
+    <h3 class="btn-primary">{{title}}</h3>
+</header>
+<!--<div class="row">-->
+
+<!--<div>-->
+<div class="col-md-12">
+    <form role="form" name="myForm" class="form-horizontal">
+        <div class="row">
+
+            <div class= "form-group">
+                <label class= "col-md-4">Organisation Name</label>
+                <div class= "col-md-4">
+                    <input ng-model="organisation.organisation_name" type= "text" class= "form-control" placeholder= "Organisation Name"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 " >Organisation Type<span class="required">*</span></label>
+                <div class="col-sm-4">
+                    <select  class="form-control dropdown" id="requiredAction" ng-model="organisation.organisation_type_id" 
+                             ng-required="true" ng-options="organisationType.organisation_type_name for organisationType in organisationTypes track by organisationType._id"
+                             >
+                        <option value="">Please Select</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-4">Organisation fiscal Year Start</label>
+                <div class= "col-md-4">
+                    <input ng-model="organisation.fiscal_year_start" type= "text" class= "form-control" placeholder= "Enter Year e.g 2015"/>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-4">Is your organization currently providing or have they in the past provided any pooled funds for health from 2012-2016?
+                </label>
+                <div class= "col-md-4">
+                    <div class="btn-group"> 
+                        <button type="button" class="btn btn-success">Yes</button> 
+                        <button type="button" class="btn btn-danger">No</button> 
+                    </div>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-4">Did you sign a MOU with the Ministry of Health?
+                </label>
+                <div class= "col-md-4">
+                    <div class="btn-group"> 
+                        <button type="button" class="btn btn-success">Yes</button> 
+                        <button type="button" class="btn btn-danger">No</button> 
+                    </div>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-4">If you work in districts, when did you first start working in the districts?
+                </label>
+                <div class= "col-md-4">
+                    <input ng-model="organisation.date_started_working_in_districts" type= "text" class= "form-control" placeholder= "Enter Year e.g 2012"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 " >Which authority was consulted before beginning?
+                    <span class="required">*</span></label>
+                  <div class="col-sm-4">
+                    <select  class="form-control dropdown" id="requiredAction" ng-model="organisation.authority_consulted_id" 
+                             ng-required="true" ng-options="authority.authority_name for authority in authoritys track by authority._id"
+                             >
+                        <option value="">Please Select</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-4">Point of contact name
+                </label>
+                <div class= "col-md-4">
+                    <input ng-model="organisation.contact_name" type= "text" class= "form-control" placeholder= "Enter full name e.g AHABWE JOHN"/>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-4">Point of contact mobile phone number 
+                </label>
+                <div class= "col-md-4">
+                    <input ng-model="organisation.mobile_phone" type= "text" class= "form-control" placeholder= "Enter point of contact mobile phone number"/>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-4">Point of contact office phone number
+                </label>
+                <div class= "col-md-4">
+                    <input ng-model="organisation.office_phone" type= "text" class= "form-control" placeholder= "Enter point of contact office phone number"/>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-4">Point of contact email address
+                </label>
+                <div class= "col-md-4">
+                    <input ng-model="organisation.email" type= "text" class= "form-control" placeholder= "Enter point of contact email"/>
+                </div>
+            </div>
+
+            <div class= "form-group">
+                <label class= "col-md-4"></label>
+                <div class="col-md-4">
+                    <a href="#/organisations" class="btn">Cancel</a>
+                    <button ng-click="saveOrganisation(organisation);" 
+                            ng-disabled="isClean() || myForm.$invalid"
+                            class="btn btn-primary">{{buttonText}}</button>
+                    <button ng-click="deleteOrganisation(organisation)"
+                            ng-show="organisation._id" class="btn btn-warning">Delete</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
